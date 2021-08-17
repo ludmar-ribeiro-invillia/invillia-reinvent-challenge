@@ -15,7 +15,7 @@ Para esse desafio solicitamos que atendam:
 * Criem uma aplicação **funcional**
 * As operações implementadas respeitem a convenção **REST** (Methods e Response)
 * Seja implementado usando **Java 11+** e **Spring Boot 2.5.3+**
-* Seja implementado uma código **legível** e **organizado**
+* Seja implementado um código **legível** e **organizado**
 * Atendam as **User Stories** abaixo descritas e os **contratos** estabelecidos
 * Utilizar uma base de dados para o armazenamento das informações
 * README atualizado com instruções de execução
@@ -108,7 +108,7 @@ Response
 }
 ```
 
-### Editar quantidade itens
+### Editar a quantidade de itens
 `PATCH /shopping-cart/<user-id>/items/<SKU>?quantity=<new quantity>`
 
 Body *None*
@@ -249,7 +249,7 @@ Response
 
 ## Extras
 
-Caso consigam completar os requisitos aqui estabelecidos e se sintam confortáveis em ir um pouco além, podem ficar à vontade em acrescentar qualquer melhoria além destes. Com por exemplo:
+Caso consigam completar os requisitos aqui estabelecidos e se sintam confortáveis em ir um pouco além, podem ficar à vontade em acrescentar qualquer melhoria além destes. Como por exemplo:
 
 * Testes de Unidade
 * Docker
