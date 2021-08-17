@@ -4,6 +4,7 @@ Agora é a hora de colocarmos em prática tudo o que relembramos em nossas sess�
 
 Para tal propomos aqui um desafio.
 
+
 ## Challenge
 
 Devemos construir um componente dessa e-store que viemos evoluindo durante o programa. 
@@ -11,13 +12,14 @@ Devemos construir um componente dessa e-store que viemos evoluindo durante o pro
 Este componente é uma aplicação REST que tem por objetivo servir operações sobre um carrinho de compra.
 
 Para esse desafio solicitamos que atendam:
-* Criem uma aplicação funcional
-* As operações implementadas respeitem a convenção REST (Methods e Response)
-* Seja implementado usando Java 11+ e Spring Boot 2.5.3+
-* Seja implementado uma código legível e organizado
-* Atendam as User Stories abaixo descritas e os contratos estabelecidos
+* Criem uma aplicação **funcional**
+* As operações implementadas respeitem a convenção **REST** (Methods e Response)
+* Seja implementado usando **Java 11+** e **Spring Boot 2.5.3+**
+* Seja implementado uma código **legível** e **organizado**
+* Atendam as **User Stories** abaixo descritas e os **contratos** estabelecidos
 * Utilizar uma base de dados para o armazenamento das informações
 * README atualizado com instruções de execução
+
 
 ## Epic
 
@@ -107,9 +109,9 @@ Response
 ```
 
 ### Editar quantidade itens
-`PATCH /shopping-cart/<user-id>/items/<SKU>?quantity=1`
+`PATCH /shopping-cart/<user-id>/items/<SKU>?quantity=<new quantity>`
 
-Body None
+Body *None*
 
 Response
 `OK 200`
@@ -126,7 +128,7 @@ Response
 ### Remover um produto do carrinho
 `DELETE /shopping-cart/<user-id>/items/<SKU>`
 
-Body None
+Body *None*
 
 Response
 `OK 200`
@@ -143,7 +145,7 @@ Response
 ### Recuperar um produto do carrinho de compra
 `GET /shopping-cart/<user-id>/items/<SKU>`
 
-Body None
+Body *None*
 
 Response
 `OK 200`
@@ -160,7 +162,7 @@ Response
 ### Recuperar o carrinho de compra
 `GET /shopping-cart/<user-id>`
 
-Body None
+Body *None*
 
 Response
 `OK 200`
@@ -188,7 +190,7 @@ Response
 ### Remover o carrinho de compra
 `DELETE /shopping-cart/<user-id>`
 
-Body None
+Body *None*
 
 Response
 `OK 200`
@@ -213,11 +215,37 @@ Response
 }
 ```
 
+### Error message
+
+Response
+Any **4XX** or **5XX** errors
+```
+{
+    "resource":"<resource name>",
+    "error_key":"<error type key>",
+    "message":"<error message>",
+    "resource_key":"<resource id>"
+}
+```
+
+**Ex:**
+Response
+`RESOURCE NOT FOUND 404`
+```
+{
+    "resource":"product",
+    "error_key":"product.not.found",
+    "message":"There is no product on shopping cart for the given SKU.",
+    "resource_key":"ASDFGHJK"
+}
+```
+
 ## Passos para entrega do challenge
 
-1 - Dar fork neste repositório
-2 - Implementar desafio
-4 - Propor um pull request
+1. Dar fork neste repositório.
+2. Implementar desafio.
+4. Propor um pull request.
+
 
 ## Extras
 
