@@ -258,3 +258,16 @@ Caso consigam completar os requisitos aqui estabelecidos e se sintam confortáve
 * Autenticação
 * Qualquer lib ou framework adicional
 * Testes de componente (API)
+
+
+
+## Referências
+
+### Swagger
+    
+    https://www.treinaweb.com.br/blog/documentando-uma-api-spring-boot-com-o-swagger
+    
+    http://localhost:8080/swagger-ui.html
+
+### Docker MySql
+    docker run -p 3306:3306 -v /tmp:/tmp --name mysql-poc --detach -e MYSQL_ROOT_PASSWORD="root" -e MYSQL_ROOT_HOST=% -e MYSQL_DATABASE=shoppingcart -d mysql/mysql-server:8.0 --lower_case_table_names=1 --init-connect='GRANT CREATE USER ON *.* TO 'root'@'%';CREATE USER admin@%` IDENTIFIED BY "root";GRANT ALL PRIVILEGES ON . TO admin@% WITH GRANT OPTION;FLUSH PRIVILEGES;'
