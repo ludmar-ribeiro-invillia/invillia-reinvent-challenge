@@ -5,11 +5,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
 
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import java.util.List;
 
 
@@ -18,14 +24,21 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-@Document(indexName = "shopping-cart")
+@Entity(name = "shoppingcart")
 public class ShoppingCart{
 
     @Id
-    private String userId;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
-    @Field(type = FieldType.Nested, includeInParent = true)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "userId", referencedColumnName = "id")
+    private User user;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "shoppingCart")
     private List<Product> listProducts;
+
+
 
 
 

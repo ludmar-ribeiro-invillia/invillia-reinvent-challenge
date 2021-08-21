@@ -9,32 +9,24 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import java.math.BigDecimal;
+import javax.persistence.OneToOne;
 
+@Entity(name = "user")
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "product")
-public class Product {
+@NoArgsConstructor
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(unique = true, nullable = false)
-    private String sku;
-    @Column(nullable = false)
+    @Column(nullable = false, length = 250)
     private String name;
-    @Column(nullable = false)
-    private BigDecimal price;
-    @Column(nullable = false)
-    private Integer quantity;
+    @Column(nullable = false, length = 11)
+    private String cpf;
 
 
-    @ManyToOne
-    @JoinColumn(name = "id", nullable = false, insertable=false, updatable=false)
+    @OneToOne(mappedBy = "user")
     private ShoppingCart shoppingCart;
-
 
 }

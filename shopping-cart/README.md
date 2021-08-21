@@ -271,3 +271,12 @@ Caso consigam completar os requisitos aqui estabelecidos e se sintam confortáve
 
 ### Docker MySql
     docker run -p 3306:3306 -v /tmp:/tmp --name mysql-poc --detach -e MYSQL_ROOT_PASSWORD="root" -e MYSQL_ROOT_HOST=% -e MYSQL_DATABASE=shoppingcart -d mysql/mysql-server:8.0 --lower_case_table_names=1 --init-connect='GRANT CREATE USER ON *.* TO 'root'@'%';CREATE USER admin@%` IDENTIFIED BY "root";GRANT ALL PRIVILEGES ON . TO admin@% WITH GRANT OPTION;FLUSH PRIVILEGES;'
+
+### Spring Data JPA MySql
+    https://spring.io/guides/gs/accessing-data-mysql/
+
+### JPA Mapeamento Relacional
+    https://www.baeldung.com/jpa-one-to-one
+
+    https://www.baeldung.com/hibernate-one-to-many
+
