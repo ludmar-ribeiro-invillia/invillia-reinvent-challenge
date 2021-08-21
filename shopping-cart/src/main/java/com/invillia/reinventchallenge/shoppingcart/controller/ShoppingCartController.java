@@ -1,15 +1,21 @@
 package com.invillia.reinventchallenge.shoppingcart.controller;
 
-import com.invillia.reinventchallenge.shoppingcart.dto.ProductDto;
+import com.invillia.reinventchallenge.shoppingcart.dto.ProductDtoRequest;
+import com.invillia.reinventchallenge.shoppingcart.dto.ProductDtoResponse;
 import com.invillia.reinventchallenge.shoppingcart.dto.ShoppingCartDto;
 import com.invillia.reinventchallenge.shoppingcart.entity.Product;
 import com.invillia.reinventchallenge.shoppingcart.entity.ShoppingCart;
 import com.invillia.reinventchallenge.shoppingcart.service.ShoppingCartService;
+import javassist.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,7 +39,7 @@ public class ShoppingCartController {
         final List<ShoppingCart> shoppingCartAll = shoppingCartService.getShoppingCartAll();
         log.info("getShoppingCartList, shoppingCartAll={}",shoppingCartAll);
         final List<ShoppingCartDto> listDto = shoppingCartAll.stream()
-                .map(shoppingCart -> convertShoppingCartToDto(shoppingCart))
+                .map(shoppingCart -> mapperShoppingCartToShoppingCartDto(shoppingCart))
                 .collect(Collectors.toList());
         log.info("listDto={}",listDto);
 
@@ -45,31 +51,39 @@ public class ShoppingCartController {
         return ResponseEntity.ok().body(listDto);
     }
 
+    @PostMapping(value = "/{user-id}/items/{sku}")
+    public ResponseEntity<ProductDtoResponse> addItemShoppingCart(
+            @PathVariable("user-id") Long idUser,
+            @PathVariable("sku") String sku,
+            @RequestBody ProductDtoRequest productDto
+    ) throws NotFoundException {
+        log.info("idUser={}, sku={}, productDto={}", idUser, sku, productDto);
+
+        final Product product = shoppingCartService.addProduct(idUser, sku, productDto);
 
 
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(mapperProductToProductResponse(product));
+    }
 
 
-
-
-
-
-    private ProductDto convertToDto (Product product){
-         ProductDto productDto = modelMapper.map(product, ProductDto.class);
+    private ProductDtoResponse mapperProductToProductResponse(Product product){
+         ProductDtoResponse productDto = modelMapper.map(product, ProductDtoResponse.class);
          return productDto;
     }
 
-    private Product convertToEntity(ProductDto productDto){
+    private Product mapperProductDtoToProduct(ProductDtoResponse productDto){
         Product product = modelMapper.map(productDto, Product.class);
         return product;
 
     }
 
-    private ShoppingCartDto convertShoppingCartToDto (ShoppingCart shoppingCart){
+    private ShoppingCartDto mapperShoppingCartToShoppingCartDto(ShoppingCart shoppingCart){
         ShoppingCartDto shoppingCartDto = modelMapper.map(shoppingCart, ShoppingCartDto.class);
         return shoppingCartDto;
     }
 
-    private ShoppingCart convertShoppingCartToEntity(ShoppingCartDto shoppingCartDto){
+    private ShoppingCart mapperShoppingCartDtoToShoppingCart(ShoppingCartDto shoppingCartDto){
         ShoppingCart shoppingCart = modelMapper.map(shoppingCartDto, ShoppingCart.class);
         return shoppingCart;
     }

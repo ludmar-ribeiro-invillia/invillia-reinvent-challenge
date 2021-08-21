@@ -10,6 +10,7 @@ import lombok.ToString;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -28,18 +29,15 @@ import java.util.List;
 public class ShoppingCart{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="idShoppingCart")
     private Long id;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "userId", referencedColumnName = "id")
+    @JoinColumn(name = "idUser", referencedColumnName = "idUser")
     private User user;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "shoppingCart")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "shoppingCart", orphanRemoval=true, fetch = FetchType.EAGER)
     private List<Product> listProducts;
-
-
-
-
 
 }

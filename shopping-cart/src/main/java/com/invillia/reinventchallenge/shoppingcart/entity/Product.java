@@ -20,7 +20,8 @@ import java.math.BigDecimal;
 public class Product {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="idProduct")
     private Long id;
     @Column(unique = true, nullable = false)
     private String sku;
@@ -33,7 +34,7 @@ public class Product {
 
 
     @ManyToOne
-    @JoinColumn(name = "id", nullable = false, insertable=false, updatable=false)
+    @JoinColumn(name = "idShoppingCart")
     private ShoppingCart shoppingCart;
 
 
