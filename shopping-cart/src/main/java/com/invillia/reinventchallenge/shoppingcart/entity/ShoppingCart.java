@@ -37,6 +37,7 @@ public class ShoppingCart{
     @JoinColumn(name = "idUser", referencedColumnName = "idUser")
     private User user;
 
+    // TODO: alterar para Set
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "shoppingCart", orphanRemoval=true, fetch = FetchType.EAGER)
     private List<Product> listProducts;
 

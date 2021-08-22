@@ -34,7 +34,7 @@ public class Product {
 
 
     @ManyToOne
-    @JoinColumn(name = "idShoppingCart")
+    @JoinColumn(name = "idShoppingCart", referencedColumnName = "idShoppingCart")
     private ShoppingCart shoppingCart;
 
 
