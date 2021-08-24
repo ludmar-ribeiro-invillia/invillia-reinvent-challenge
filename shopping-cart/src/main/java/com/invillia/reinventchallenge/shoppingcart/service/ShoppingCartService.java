@@ -4,6 +4,7 @@ import com.invillia.reinventchallenge.shoppingcart.dto.ProductDtoRequest;
 import com.invillia.reinventchallenge.shoppingcart.entity.Product;
 import com.invillia.reinventchallenge.shoppingcart.entity.ShoppingCart;
 import com.invillia.reinventchallenge.shoppingcart.entity.User;
+import com.invillia.reinventchallenge.shoppingcart.exception.ShoppingCartNotFoundException;
 import com.invillia.reinventchallenge.shoppingcart.repository.ProductRepository;
 import com.invillia.reinventchallenge.shoppingcart.repository.ShoppingCartRepository;
 import com.invillia.reinventchallenge.shoppingcart.repository.UserRepository;
@@ -181,18 +182,18 @@ public class ShoppingCartService {
     public ShoppingCart removeShoppingCart(Long idUser) throws NotFoundException {
         log.info("removeShoppingCart, idUser={}", idUser);
 
+
         final ShoppingCart shoppingCartUser = shoppingCartRepository.findByUserId(idUser);
+
         if (shoppingCartUser == null){
-            throw new NotFoundException("Não existe este carrinho de compras!");
+            log.error("removeShoppingCart, não existe este carrinho de compras, idUser={}", idUser);
+            throw new ShoppingCartNotFoundException("Não existe este carrinho de compras!");
         }
 
         shoppingCartRepository.delete(shoppingCartUser);
 
         return shoppingCartUser;
     }
-
-
-
 
 
 }

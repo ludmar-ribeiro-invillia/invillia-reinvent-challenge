@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @Data
@@ -11,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ShoppingCartDto {
 
+    @NotEmpty(message = "ShoppingCartDto, User id does not exist!")
     private String userId;
 
 

@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.persistence.GeneratedValue;
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,7 +60,7 @@ public class ShoppingCartController {
     public ResponseEntity<ProductDtoResponse> addItemShoppingCart(
             @PathVariable("user-id") Long idUser,
             @PathVariable("sku") String sku,
-            @RequestBody ProductDtoRequest productDto
+            @Valid @RequestBody ProductDtoRequest productDto
     ) throws NotFoundException {
         log.info("idUser={}, sku={}, productDto={}", idUser, sku, productDto);
 
@@ -126,7 +126,7 @@ public class ShoppingCartController {
     }
 
     @DeleteMapping(value = "/{user-id}")
-    public ResponseEntity<ShoppingCartDto> removeShoppingCart(@PathVariable("user-id")Long idUser) throws NotFoundException {
+    public ResponseEntity<ShoppingCartDto> removeShoppingCart(@PathVariable  ("user-id")Long idUser) throws NotFoundException {
         log.info("removeShoppingCart, idUser={}", idUser);
 
         final ShoppingCart shoppingCart = shoppingCartService.removeShoppingCart(idUser);
@@ -155,5 +155,6 @@ public class ShoppingCartController {
         ShoppingCart shoppingCart = modelMapper.map(shoppingCartDto, ShoppingCart.class);
         return shoppingCart;
     }
+
 
 }
