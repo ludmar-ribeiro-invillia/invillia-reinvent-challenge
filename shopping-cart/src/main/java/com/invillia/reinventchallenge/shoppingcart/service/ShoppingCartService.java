@@ -56,13 +56,14 @@ public class ShoppingCartService {
         product.setName(productDto.getName());
         product.setQuantity(productDto.getQuantity());
 
+
         ShoppingCart shoppingCartUser = shoppingCartRepository.findByUserId(idUser);
 
         if (shoppingCartUser != null){
             log.info("addProduct Existe Shopping Cart na base");
             product.setShoppingCart(shoppingCartUser);
             shoppingCartUser.getListProducts().add(product);
-            shoppingCartRepository.save(shoppingCartUser);
+            shoppingCartUser = shoppingCartRepository.save(shoppingCartUser);
 
             return product;
         }
@@ -74,11 +75,11 @@ public class ShoppingCartService {
         log.info("addProduct shoppingCartUser");
         shoppingCartUser.setListProducts(Arrays.asList(product));
 
-        shoppingCartRepository.save(shoppingCartUser);
+        shoppingCartUser = shoppingCartRepository.save(shoppingCartUser);
         log.info("addProduct save shoppingCarUser");
 
 
-        return product;
+        return shoppingCartUser.getListProducts().get(productDto.getQuantity());
     }
 
     public Product putProductService(Long idUser, String sku, ProductDtoRequest productDto) {

@@ -11,6 +11,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import java.math.BigDecimal;
 
 @Data
@@ -29,13 +31,33 @@ public class Product {
     private String name;
     @Column(nullable = false)
     private BigDecimal price;
-    @Column(nullable = false)
     private Integer quantity;
+
+
+    @PrePersist
+    public void prePersist() {
+        if(quantity==null || quantity==0){
+            quantity = 1;
+        }
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        if(quantity==null || quantity==0){
+            quantity = 1;
+        }
+    }
 
 
     @ManyToOne
     @JoinColumn(name = "idShoppingCart", referencedColumnName = "idShoppingCart")
     private ShoppingCart shoppingCart;
+
+    public BigDecimal calculateSumProduct (){
+        BigDecimal sum = price.multiply(BigDecimal.valueOf(quantity));
+
+        return sum;
+    }
 
 
 }

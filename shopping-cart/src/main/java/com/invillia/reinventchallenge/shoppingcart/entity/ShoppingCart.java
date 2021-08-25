@@ -17,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import java.math.BigDecimal;
 import java.util.List;
 
 
@@ -40,5 +41,7 @@ public class ShoppingCart{
     // TODO: alterar para Set
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "shoppingCart", orphanRemoval=true, fetch = FetchType.EAGER)
     private List<Product> listProducts;
+
+
 
 }

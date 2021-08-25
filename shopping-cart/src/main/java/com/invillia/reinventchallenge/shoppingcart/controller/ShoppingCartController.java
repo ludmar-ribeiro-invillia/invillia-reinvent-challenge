@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,8 +61,7 @@ public class ShoppingCartController {
     public ResponseEntity<ProductDtoResponse> addItemShoppingCart(
             @PathVariable("user-id") Long idUser,
             @PathVariable("sku") String sku,
-            @Valid @RequestBody ProductDtoRequest productDto
-    ) throws NotFoundException {
+            @Valid @RequestBody ProductDtoRequest productDto)  {
         log.info("idUser={}, sku={}, productDto={}", idUser, sku, productDto);
 
         final Product product = shoppingCartService.addProduct(idUser, sku, productDto);
@@ -148,6 +148,13 @@ public class ShoppingCartController {
 
     private ShoppingCartDto mapperShoppingCartToShoppingCartDto(ShoppingCart shoppingCart){
         ShoppingCartDto shoppingCartDto = modelMapper.map(shoppingCart, ShoppingCartDto.class);
+        BigDecimal sum = BigDecimal.ZERO;
+
+        for (Product product: shoppingCart.getListProducts()) {
+            sum = sum.add(product.calculateSumProduct());
+        }
+
+        shoppingCartDto.setTotal(sum);
         return shoppingCartDto;
     }
 
