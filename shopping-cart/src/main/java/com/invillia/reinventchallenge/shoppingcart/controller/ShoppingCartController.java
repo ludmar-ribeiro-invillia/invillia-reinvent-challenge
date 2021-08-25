@@ -75,7 +75,7 @@ public class ShoppingCartController {
     public ResponseEntity<ProductDtoResponse> putItemShoppingCart(
             @PathVariable("user-id") Long idUser,
             @PathVariable("sku") String sku,
-            @RequestBody ProductDtoRequest productDto) throws NotFoundException {
+            @RequestBody ProductDtoRequest productDto){
         log.info("putItemShoppingCart, idUser={}, sku={}, productDto={}", idUser, sku, productDto);
         final Product product = shoppingCartService.putProductService(idUser, sku, productDto);
 
@@ -88,7 +88,7 @@ public class ShoppingCartController {
     public ResponseEntity<ProductDtoResponse> editNumberOfItem(
             @PathVariable("user-id") Long idUser,
             @PathVariable("sku") String sku,
-            @RequestParam("quantity") Integer quantity) throws NotFoundException {
+            @RequestParam("quantity") Integer quantity){
         log.info("editNumberOfItem, idUser={}, sku={}, newQuantity={}", idUser, sku, quantity);
 
         final Product product = shoppingCartService.editNumberOfItem(idUser, sku, quantity);
@@ -99,7 +99,7 @@ public class ShoppingCartController {
     @DeleteMapping(value = "/{user-id}/items/{sku}")
     public ResponseEntity<ProductDtoResponse> removeProductShoppingCart(
             @PathVariable("user-id") Long idUser,
-            @PathVariable("sku") String sku) throws NotFoundException {
+            @PathVariable("sku") String sku){
         log.info("removeProductShoppingCart, idUser={}, sku={}", idUser, sku);
         final Product product = shoppingCartService.removeProductShoppingCart(idUser, sku);
 
@@ -109,7 +109,7 @@ public class ShoppingCartController {
     @GetMapping(value = "/{user-id}/items/{sku}")
     public ResponseEntity<ProductDtoResponse> retrieveProductShoppingCart(
             @PathVariable("user-id") Long idUser,
-            @PathVariable("sku") String sku) throws NotFoundException {
+            @PathVariable("sku") String sku){
 
         log.info("retrieveProductShoppingCart, idUser={}, sku={}", idUser, sku);
 
@@ -118,7 +118,7 @@ public class ShoppingCartController {
     }
 
     @GetMapping(value = "/{user-id}")
-    public ResponseEntity<ShoppingCartDto> retrieveShoppingCart(@PathVariable("user-id") Long idUser) throws NotFoundException {
+    public ResponseEntity<ShoppingCartDto> retrieveShoppingCart(@PathVariable("user-id") Long idUser){
         log.info("retrieveShoppingCart, idUser={}", idUser);
 
         final ShoppingCart shoppingCart = shoppingCartService.retrieveShoppingCart(idUser);
@@ -126,7 +126,7 @@ public class ShoppingCartController {
     }
 
     @DeleteMapping(value = "/{user-id}")
-    public ResponseEntity<ShoppingCartDto> removeShoppingCart(@PathVariable  ("user-id")Long idUser) throws NotFoundException {
+    public ResponseEntity<ShoppingCartDto> removeShoppingCart(@PathVariable  ("user-id")Long idUser){
         log.info("removeShoppingCart, idUser={}", idUser);
 
         final ShoppingCart shoppingCart = shoppingCartService.removeShoppingCart(idUser);
