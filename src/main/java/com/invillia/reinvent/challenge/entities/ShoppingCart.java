@@ -11,6 +11,7 @@ public class ShoppingCart implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "shopping_cart_id")
     private Long id;
+
     @OneToOne
     @JoinColumn(name = "User_Id")
     private User user;

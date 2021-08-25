@@ -1,5 +1,7 @@
 package com.invillia.reinvent.challenge.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -13,6 +15,7 @@ public class User implements Serializable {
     private Long id;
     private String name;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "user")
     private ShoppingCart shoppingCart;
 
@@ -43,6 +46,7 @@ public class User implements Serializable {
     public ShoppingCart getShoppingCart() {
         return shoppingCart;
     }
+
     public void setShoppingCart(ShoppingCart shoppingCart) {
         this.shoppingCart = shoppingCart;
     }

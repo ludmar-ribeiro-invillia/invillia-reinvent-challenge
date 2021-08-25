@@ -26,15 +26,15 @@ public class ProductResource {
 
     @GetMapping(value ="/{sku}")
     public ResponseEntity<Product> findById(@PathVariable Long sku){
-            Product product = service.findById(sku);
-            return ResponseEntity.ok().body(product);
+        Product product = service.findById(sku);
+        return ResponseEntity.ok().body(product);
     }
 
     @PostMapping
-    public ResponseEntity<Product> insert(@RequestBody Product obj){
-        obj = service.insert(obj);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{/sku}").buildAndExpand(obj.getSku()).toUri();
-        return ResponseEntity.created(uri).body(obj);
+    public ResponseEntity<Product> insert(@RequestBody Product product){
+        product = service.insert(product);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{/sku}").buildAndExpand(product.getSku()).toUri();
+        return ResponseEntity.created(uri).body(product);
     }
 
     @DeleteMapping(value ="/{sku}")

@@ -1,8 +1,8 @@
 package com.invillia.reinvent.challenge.services;
 
 import com.invillia.reinvent.challenge.entities.Product;
-import com.invillia.reinvent.challenge.entities.User;
 import com.invillia.reinvent.challenge.repositories.ProductRepository;
+import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,10 +19,11 @@ public class ProductService {
         return repository.findAll();
     }
 
-    public Product findById(Long id){
-        Optional<Product> obj = repository.findById(id);
-        return obj.get();
-    }
+    public Product findById(Long sku){
+        Optional<Product> product = repository.findById(sku);
+             return product.get();
+        }
+
 
     public Product insert(Product obj){
         return repository.save(obj);
