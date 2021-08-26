@@ -282,7 +282,7 @@ spring.datasource.driver-class-name =com.mysql.jdbc.Driver
 
 ###Docker - MySQL:
  ```shell
-docker run --name mysql-shopping-cart -e MYSQL_DATABASE=shopping-cart -e MYSQL_USER=thandra -e MYSQL_ROOT_PASSWORD=my_secret_pw -d -p 3306:3docker run --name mysql-shopping-cart -e MYSQL_DATABASE=shopping-cart -e MYSQL_USER=thandra -e MYSQL_ROOT_PASSWORD=my_secret_pw -d -p 3306:3306 mysql:latest306 mysql:latest
+docker run --name mysql-shopping-cart -e MYSQL_DATABASE=shopping-cart -e MYSQL_ROOT_PASSWORD=my_secret_pw -d -p 3306:3docker run --name mysql-shopping-cart -e MYSQL_DATABASE=shopping-cart -e MYSQL_USER=thandra -e MYSQL_ROOT_PASSWORD=my_secret_pw -d -p 3306:3306 mysql:latest306 mysql:latest
 ```
 
 
