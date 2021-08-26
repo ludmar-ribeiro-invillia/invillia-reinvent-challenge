@@ -13,7 +13,6 @@ public class Product implements Serializable {
     private String name;
     private Double price;
 
-
     public Product(){
     }
 
@@ -46,7 +45,4 @@ public class Product implements Serializable {
     public void setPrice(Double price) {
         this.price = price;
     }
-
-
-
 }

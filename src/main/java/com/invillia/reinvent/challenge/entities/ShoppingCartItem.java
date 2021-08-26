@@ -19,6 +19,7 @@ public class ShoppingCartItem implements Serializable {
     @ManyToOne
     @JoinColumn(name = "Shopping_Cart_Id")
     private ShoppingCart shoppingCart;
+
     private Integer quantity;
 
 
