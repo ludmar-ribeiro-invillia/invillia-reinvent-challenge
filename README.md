@@ -7,7 +7,7 @@ Para tal propomos aqui um desafio.
 
 ## Challenge
 
-Devemos construir um componente dessa e-store que viemos evoluindo durante o programa. 
+Devemos construir um componente dessa e-store que viemos evoluindo durante o programa.
 
 Este componente é uma aplicação REST que tem por objetivo servir operações sobre um carrinho de compra.
 
@@ -258,3 +258,38 @@ Caso consigam completar os requisitos aqui estabelecidos e se sintam confortáve
 * Autenticação
 * Qualquer lib ou framework adicional
 * Testes de componente (API)
+
+## Instruções de uso
+
+
+###Dependencies
+- Spring Data JPA SQL
+- H2 Database SQL 
+- Spring Boot DevTools DEVELOPER TOOLS 
+- Spring Web WEB 
+- MySQL Driver SQL 
+- ModelMapper
+
+###Aplication properties
+
+```
+spring.jpa.hibernate.ddl-auto=update
+spring.datasource.url=jdbc:mysql://localhost:3306/shopping-cart
+spring.datasource.username=root
+spring.datasource.password=my_secret_pw
+spring.datasource.driver-class-name =com.mysql.jdbc.Driver
+```
+
+###Docker - MySQL:
+ ```shell
+docker run --name mysql-shopping-cart -e MYSQL_DATABASE=shopping-cart -e MYSQL_USER=thandra -e MYSQL_ROOT_PASSWORD=my_secret_pw -d -p 3306:3docker run --name mysql-shopping-cart -e MYSQL_DATABASE=shopping-cart -e MYSQL_USER=thandra -e MYSQL_ROOT_PASSWORD=my_secret_pw -d -p 3306:3306 mysql:latest306 mysql:latest
+```
+
+
+###Executar:
+```shell
+./gradlew bootRun
+```
+- depois de executado:
+  - Docker do mysql roda na porta `3306`
+  - Aplicação rodana porta `8080`
