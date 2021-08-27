@@ -259,10 +259,10 @@ Caso consigam completar os requisitos aqui estabelecidos e se sintam confortáve
 * Qualquer lib ou framework adicional
 * Testes de componente (API)
 
+
 ## Instruções de uso
 
-
-###Dependencies
+### Dependencies:
 - Spring Data JPA SQL
 - H2 Database SQL 
 - Spring Boot DevTools DEVELOPER TOOLS 
@@ -270,7 +270,7 @@ Caso consigam completar os requisitos aqui estabelecidos e se sintam confortáve
 - MySQL Driver SQL 
 - ModelMapper
 
-###Aplication properties
+### Aplication properties:
 
 ```
 spring.jpa.hibernate.ddl-auto=update
@@ -280,16 +280,16 @@ spring.datasource.password=my_secret_pw
 spring.datasource.driver-class-name =com.mysql.jdbc.Driver
 ```
 
-###Docker - MySQL:
+### Docker - MySQL:
  ```shell
 docker run --name mysql-shopping-cart -e MYSQL_DATABASE=shopping-cart -e MYSQL_ROOT_PASSWORD=my_secret_pw -d -p 3306:3docker run --name mysql-shopping-cart -e MYSQL_DATABASE=shopping-cart -e MYSQL_USER=thandra -e MYSQL_ROOT_PASSWORD=my_secret_pw -d -p 3306:3306 mysql:latest306 mysql:latest
 ```
 
 
-###Executar:
+### Executar:
 ```shell
 ./gradlew bootRun
 ```
 - Depois de executado:
-  - Docker do mysql roda na porta `3306`
+  - Docker do MySQL roda na porta `3306`
   - Aplicação roda na porta `8081`
