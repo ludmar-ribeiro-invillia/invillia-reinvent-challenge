@@ -49,4 +49,18 @@ public class ShoppingCartService {
         return new ItemResponseDto(sku, itemDto.getName(), itemDto.getPrice(), itemDto.getQuantity());
     }
 
+    public ItemResponseDto editItem(Integer userId, String sku, ItemDto itemDto) {
+        Cart cart = cartRepository.findByProduct_SkuAndCustomer_Id(sku, userId);
+        cart.setPrice(itemDto.getPrice());
+        cart.setQuantity(itemDto.getQuantity());
+        cartRepository.save(cart);
+        return new ItemResponseDto(sku, itemDto.getName(), itemDto.getPrice(), itemDto.getQuantity());
+    }
+
+    public ItemResponseDto deleteItem(Integer userId, String sku) {
+        Cart cart = cartRepository.findByProduct_SkuAndCustomer_Id(sku, userId);
+        cartRepository.delete(cart);
+        return new ItemResponseDto(sku, cart.getProduct().getName(), cart.getPrice(), cart.getQuantity());
+    }
+
 }
