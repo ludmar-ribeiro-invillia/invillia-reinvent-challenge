@@ -11,12 +11,11 @@ public class Cart {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "sku", referencedColumnName = "sku")
-//    @JoinColumn(name = "product_id", referencedColumnName = "id")
+    @JoinColumn(name = "sku", referencedColumnName = "sku", nullable = false, unique = true)
     private Product product;
 
-    @OneToOne(targetEntity = Customer.class, fetch = FetchType.EAGER)
-    @JoinColumn(name = "customer_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @ManyToOne()
+    @JoinColumn(name = "customer_id", referencedColumnName = "id", nullable = false)
     private Customer customer;
 
     private Integer quantity;
