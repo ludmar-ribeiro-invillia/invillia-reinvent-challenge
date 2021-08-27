@@ -2,7 +2,6 @@ package com.invillia.reinvent.challenge.entities;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -18,10 +17,10 @@ public class ShoppingCart implements Serializable {
     @JoinColumn(name = "User_Id")
     private User user;
 
-    @OneToMany(mappedBy = "shoppingCart")
-    private List<ShoppingCartItem> items = new ArrayList<>();
+    @OneToMany(mappedBy = "shoppingCart", cascade = CascadeType.ALL)
+    private List<ShoppingCartItem> items;
 
-    public ShoppingCart(Long id) {
+    public ShoppingCart() {
     }
 
     public ShoppingCart(Long id, User user, List<ShoppingCartItem> items) {
@@ -54,11 +53,12 @@ public class ShoppingCart implements Serializable {
         this.items = items;
     }
 
-    public Double getTotal(){
+    public double getTotal(){
         double sum = 0.0;
         for(ShoppingCartItem x: items){
             sum += x.getSubTotal();
         }
         return sum;
     }
+
 }

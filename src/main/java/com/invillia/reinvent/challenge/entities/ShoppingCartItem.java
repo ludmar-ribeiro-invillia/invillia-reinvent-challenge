@@ -69,3 +69,4 @@ public class ShoppingCartItem implements Serializable {
         return quantity * product.getPrice();
     }
 }
+

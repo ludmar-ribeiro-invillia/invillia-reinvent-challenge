@@ -10,7 +10,7 @@ public class ShoppingCartItemResponse {
     private Long sku;
     private Double price;
     private String name;
-    private Integer quantity = 1;
+    private Integer quantity;
 
     public ShoppingCartItemResponse(){
 
