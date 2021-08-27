@@ -2,6 +2,7 @@ package com.invillia.challenge.shoppingcart.controller;
 
 import com.invillia.challenge.shoppingcart.dto.ItemDto;
 import com.invillia.challenge.shoppingcart.dto.ItemResponseDto;
+import com.invillia.challenge.shoppingcart.entity.Cart;
 import com.invillia.challenge.shoppingcart.entity.Product;
 import com.invillia.challenge.shoppingcart.service.ShoppingCartService;
 import org.modelmapper.ModelMapper;
@@ -24,8 +25,8 @@ public class ShoppingCartController {
 
     @PostMapping(path = "/{user-id}/items/{SKU}")
     public ResponseEntity<ItemResponseDto> addItem (@PathVariable("user-id") Integer userId, @PathVariable("SKU") String sku , @RequestBody ItemDto item) {
-        final Product product = shoppingCartService.AddItem(userId, sku, item);
-        return ResponseEntity.ok().body(convertProductToItemResponseDto(product));
+        final ItemResponseDto itemResponse = shoppingCartService.AddItem(userId, sku, item);
+        return ResponseEntity.ok().body(itemResponse);
     }
 
 //    @PutMapping(path = "/{user-id}/items/{SKU}")
@@ -48,8 +49,8 @@ public class ShoppingCartController {
 //
 //    }
 
-    private ItemResponseDto convertProductToItemResponseDto(Product product) {
-        ItemResponseDto itemResponseDto = modelMapper.map(product, ItemResponseDto.class);
+    private ItemResponseDto convertProductToItemResponseDto(Cart cart) {
+        ItemResponseDto itemResponseDto = modelMapper.map(cart, ItemResponseDto.class);
         return itemResponseDto;
     }
 

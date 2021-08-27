@@ -1,6 +1,7 @@
 package com.invillia.challenge.shoppingcart.service;
 
 import com.invillia.challenge.shoppingcart.dto.ItemDto;
+import com.invillia.challenge.shoppingcart.dto.ItemResponseDto;
 import com.invillia.challenge.shoppingcart.entity.Cart;
 import com.invillia.challenge.shoppingcart.entity.Customer;
 import com.invillia.challenge.shoppingcart.entity.Product;
@@ -41,15 +42,16 @@ public class ShoppingCartService {
         return productRepository.save(product);
     }
 
-    public Product AddItem(Integer userId, String sku, ItemDto itemDto) {
+    public ItemResponseDto AddItem(Integer userId, String sku, ItemDto itemDto) {
         //TODO adicionar validação para sku do produto e userid
         final Customer customer = customerRepository.findById(userId)
                 .orElseThrow();
         final Product product = new Product(itemDto.getPrice(), itemDto.getName(), sku);
         final Cart cart = new Cart(product, customer, itemDto.getQuantity(), product.getPrice());
-//        productRepository.save(product);
+        productRepository.save(product);
         cartRepository.save(cart);
-        return product;
+        final ItemResponseDto itemResponse = new ItemResponseDto(sku, itemDto.getName(), itemDto.getPrice(), itemDto.getQuantity());
+        return itemResponse;
     }
 
 }

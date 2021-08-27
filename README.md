@@ -290,6 +290,6 @@ docker run --name mysql-shopping-cart -e MYSQL_DATABASE=shopping-cart -e MYSQL_R
 ```shell
 ./gradlew bootRun
 ```
-- depois de executado:
+- Depois de executado:
   - Docker do mysql roda na porta `3306`
-  - Aplicação rodana porta `8080`
+  - Aplicação roda na porta `8081`

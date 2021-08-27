@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 public class Cart {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    private String id;
+    private Integer id;
 
     @ManyToOne
     @JoinColumn(name = "sku", referencedColumnName = "sku")
@@ -33,11 +33,11 @@ public class Cart {
         this.price = price;
     }
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
