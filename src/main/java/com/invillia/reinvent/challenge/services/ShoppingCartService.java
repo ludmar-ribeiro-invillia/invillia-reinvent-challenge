@@ -7,6 +7,7 @@ import com.invillia.reinvent.challenge.entities.User;
 import com.invillia.reinvent.challenge.repositories.ShoppingCartItemRepository;
 import com.invillia.reinvent.challenge.repositories.ShoppingCartRepository;
 import com.invillia.reinvent.challenge.request.AddShoppingCartItemRequest;
+import com.invillia.reinvent.challenge.services.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +30,7 @@ public class ShoppingCartService {
     private ShoppingCartItemRepository itemRepository;
 
     public void addItem(Long userId, Long sku, AddShoppingCartItemRequest request){
+
         User user = userService.findById(userId);
 
         Optional<ShoppingCart> optShoppingCart = shoppingCartRepository.findByUserId(userId);
@@ -52,8 +54,21 @@ public class ShoppingCartService {
     }
 
     public void removeItem(Long userId, Long sku){
-        // buscar usuario
-        //buscar o carrinho do usuario. Se nao encontrar dar uma exception
+
+        User user = userService.findById(userId);
+
+        Optional<ShoppingCart> optShoppingCart = shoppingCartRepository.findByUserId(userId);
+        ShoppingCart shoppingCart;
+        if(optShoppingCart.isPresent()){
+            shoppingCart = optShoppingCart.get();
+        } else {
+            optShoppingCart.orElseThrow(() -> new ResourceNotFoundException(sku));
+        }
+
+
+
+
+        //itemRepository.deleteById(sku);
         //se encontrar remover o produto com o sku do parametro do carrinho
         //buscar o shoppingCartItem que contem o produto e o  carrinho
         //itemRepository.delete(quem eu busquei na linha 58);

@@ -31,5 +31,22 @@ public class ShoppingCartResource {
 
     }
 
+    @DeleteMapping("{userId}/items/{sku}")
+    public ResponseEntity<ShoppingCartItemResponse> removeItem(@PathVariable Long userId, @PathVariable Long sku) {
+
+        //removi todos os itens de um produto
+        service.removeItem(userId, sku);
+
+        ShoppingCartItemResponse shoppingCartItemResponse = new ShoppingCartItemResponse();
+        shoppingCartItemResponse.setSku(sku);
+        shoppingCartItemResponse.getName();
+        shoppingCartItemResponse.getPrice();
+        shoppingCartItemResponse.getQuantity();
+
+
+        return new ResponseEntity<>(shoppingCartItemResponse, HttpStatus.OK);
+
+    }
+
  }
 
