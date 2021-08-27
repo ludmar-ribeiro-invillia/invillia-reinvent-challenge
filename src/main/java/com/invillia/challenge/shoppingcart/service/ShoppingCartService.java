@@ -34,24 +34,19 @@ public class ShoppingCartService {
         return StreamSupport.stream(productIterable.spliterator(),false).collect(Collectors.toList());
     }
 
-    public Optional<Product> getProductBySku(@PathVariable String sku) {
-        return productRepository.findById(sku);
-    }
-
     public Product createProduct(Product product) {
         return productRepository.save(product);
     }
 
     public ItemResponseDto AddItem(Integer userId, String sku, ItemDto itemDto) {
-        //TODO adicionar validação para sku do produto e userid
+        //TODO adicionar validação para sku do produto e userid, adicionar erro, no caso da segunda tentativa, este produto não existe ou este produto já está no carrinho.
         final Customer customer = customerRepository.findById(userId)
                 .orElseThrow();
         final Product product = new Product(itemDto.getPrice(), itemDto.getName(), sku);
         final Cart cart = new Cart(product, customer, itemDto.getQuantity(), product.getPrice());
         productRepository.save(product);
         cartRepository.save(cart);
-        final ItemResponseDto itemResponse = new ItemResponseDto(sku, itemDto.getName(), itemDto.getPrice(), itemDto.getQuantity());
-        return itemResponse;
+        return new ItemResponseDto(sku, itemDto.getName(), itemDto.getPrice(), itemDto.getQuantity());
     }
 
 }
