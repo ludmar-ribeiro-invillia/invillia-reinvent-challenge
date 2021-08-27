@@ -26,7 +26,6 @@ public class User {
     @Column(nullable = false, length = 11)
     private String cpf;
 
-
     @OneToOne(mappedBy = "user")
     private ShoppingCart shoppingCart;
 

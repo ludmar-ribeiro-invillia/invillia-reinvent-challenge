@@ -17,5 +17,4 @@ public class ProductDtoResponse {
     private BigDecimal price;
     private Integer quantity;
 
-
 }

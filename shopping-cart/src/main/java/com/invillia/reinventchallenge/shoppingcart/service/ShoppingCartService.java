@@ -33,11 +33,11 @@ public class ShoppingCartService {
     @Autowired
     private ProductRepository productRepository;
 
-    public List<ShoppingCart> getShoppingCartAll(){
-        log.info("Erika, id={}",1);
-        final Iterable<ShoppingCart> shoppingCartAll = shoppingCartRepository.findAll();
+    public List<ShoppingCart> getAll() {
+        log.info("Erika, id={}", 1);
+        final List<ShoppingCart> shoppingCartAll = shoppingCartRepository.findAll();
 
-        return StreamSupport.stream(shoppingCartAll.spliterator(),false).collect(Collectors.toList());
+        return StreamSupport.stream(shoppingCartAll.spliterator(), false).collect(Collectors.toList());
     }
 
     public Product addProduct(Long idUser, String sku, ProductDtoRequest productDto) {
@@ -48,23 +48,16 @@ public class ShoppingCartService {
                 .orElseThrow(() -> {
                     log.error("Usuário não encontrado!");
                     return new UserNotFoundException("Usuário não encontrado!", idUser.toString());
-                } );
+                });
 
-        final Product product = new Product();
-        product.setSku(sku);
-        product.setPrice(productDto.getPrice());
-        product.setName(productDto.getName());
-        product.setQuantity(productDto.getQuantity());
-
+        final Product product = new Product(sku, productDto.getName(), productDto.getPrice(), productDto.getQuantity());
 
         ShoppingCart shoppingCartUser = shoppingCartRepository.findByUserId(idUser);
-
-        if (shoppingCartUser != null){
+        if (shoppingCartUser != null) {
             log.info("addProduct Existe Shopping Cart na base");
             product.setShoppingCart(shoppingCartUser);
             shoppingCartUser.getListProducts().add(product);
             shoppingCartUser = shoppingCartRepository.save(shoppingCartUser);
-
             return product;
         }
 
@@ -82,80 +75,9 @@ public class ShoppingCartService {
         return shoppingCartUser.getListProducts().get(productDto.getQuantity());
     }
 
-    public Product putProductService(Long idUser, String sku, ProductDtoRequest productDto) {
+    public Product putProduct(Long idUser, String sku, ProductDtoRequest productDto) {
         log.info("putProductService, idUser={}, sku={}, productDto={}", idUser, sku, productDto);
         final ShoppingCart shoppingCartUser = shoppingCartRepository.findByUserId(idUser);
-
-        final Optional<Product> productBySku = shoppingCartUser.getListProducts()
-                .stream()
-                .filter(item -> sku.equals(item.getSku()))
-                .findFirst();
-
-        productBySku.orElseThrow(() -> {
-            log.error("Produto não encontrado!");
-            return new ProductNotFoundException("Produto não encontrado!", sku);
-        } );
-
-        final Product product = productBySku.get();
-        product.setQuantity(productDto.getQuantity());
-        product.setName(productDto.getName());
-        product.setPrice(productDto.getPrice());
-
-        return productRepository.save(product);
-    }
-
-    public Product editNumberOfItem(Long idUser, String sku, Integer quantity ) {
-        log.info("editNumberOfItem, idUser={}, sku={}, quantity={}", idUser, sku, quantity);
-
-        ShoppingCart shoppingCartUser = shoppingCartRepository.findByUserId(idUser);
-        final Optional<Product> productBySku = shoppingCartUser.getListProducts()
-                .stream()
-                .filter(item -> sku.equals(item.getSku()))
-                .findFirst();
-
-        productBySku.orElseThrow(() -> {
-            log.error("Produto não encontrado!");
-            return new ProductNotFoundException("Produto não encontrado!", sku);
-        } );
-
-        Product product = productBySku.get();
-        product.setQuantity(quantity);
-
-
-        return productRepository.save(product);
-    }
-
-    public Product removeProductShoppingCart(Long idUser, String sku) {
-        log.info("removeProductShoppingCart, idUser={}, sku={}", idUser, sku);
-
-        final ShoppingCart shoppingCartUser = shoppingCartRepository.findByUserId(idUser);
-        if (shoppingCartUser == null){
-            log.error("removeProductShoppingCart Carrinho não encontrado! idUser={}, sku={}", idUser, sku);
-            throw new ShoppingCartNotFoundException("Carrinho não encontrado!", idUser.toString());
-        }
-
-        final Optional<Product> productBySku = shoppingCartUser.getListProducts()
-                .stream()
-                .filter(item -> sku.equals(item.getSku()))
-                .findFirst();
-
-        productBySku.orElseThrow(() -> {
-            log.error("Produto não encontrado!");
-            return new ProductNotFoundException("Produto não encontrado!", sku);
-
-        } );
-        final Product product = productBySku.get();
-        shoppingCartUser.getListProducts().remove(product);
-        shoppingCartRepository.save(shoppingCartUser);
-
-        return product;
-    }
-
-    public Product retrieveProductShoppingCart(Long idUser, String sku) {
-        log.info("retrieveProductShoppingCart, idUser={}, sku={}", idUser, sku);
-
-        final ShoppingCart shoppingCartUser = shoppingCartRepository.findByUserId(idUser);
-
         final Optional<Product> productBySku = shoppingCartUser.getListProducts()
                 .stream()
                 .filter(item -> sku.equals(item.getSku()))
@@ -166,36 +88,84 @@ public class ShoppingCartService {
             return new ProductNotFoundException("Produto não encontrado!", sku);
         });
 
+        final Product product = new Product(sku, productDto.getName(), productDto.getPrice(), productDto.getQuantity());
+
+        return productRepository.save(product);
+
+    }
+
+    public Product editNumberOfItem(Long idUser, String sku, Integer quantity) {
+        log.info("editNumberOfItem, idUser={}, sku={}, quantity={}", idUser, sku, quantity);
+        ShoppingCart shoppingCartUser = shoppingCartRepository.findByUserId(idUser);
+        final Optional<Product> productBySku = shoppingCartUser.getListProducts()
+                .stream()
+                .filter(item -> sku.equals(item.getSku()))
+                .findFirst();
+
+        productBySku.orElseThrow(() -> {
+            log.error("Produto não encontrado!");
+            return new ProductNotFoundException("Produto não encontrado!", sku);
+        });
+        Product product = productBySku.get();
+        product.setQuantity(quantity);
+        return productRepository.save(product);
+    }
+
+    public Product removeProductShoppingCart(Long idUser, String sku) {
+        log.info("removeProductShoppingCart, idUser={}, sku={}", idUser, sku);
+        final ShoppingCart shoppingCartUser = shoppingCartRepository.findByUserId(idUser);
+        if (shoppingCartUser == null) {
+            log.error("removeProductShoppingCart Carrinho não encontrado! idUser={}, sku={}", idUser, sku);
+            throw new ShoppingCartNotFoundException("Carrinho não encontrado!", idUser.toString());
+        }
+        final Optional<Product> productBySku = shoppingCartUser.getListProducts()
+                .stream()
+                .filter(item -> sku.equals(item.getSku()))
+                .findFirst();
+
+        productBySku.orElseThrow(() -> {
+            log.error("Produto não encontrado!");
+            return new ProductNotFoundException("Produto não encontrado!", sku);
+        });
+        final Product product = productBySku.get();
+        shoppingCartUser.getListProducts().remove(product);
+        shoppingCartRepository.save(shoppingCartUser);
+        return product;
+    }
+
+    public Product retrieveProductShoppingCart(Long idUser, String sku) {
+        log.info("retrieveProductShoppingCart, idUser={}, sku={}", idUser, sku);
+        final ShoppingCart shoppingCartUser = shoppingCartRepository.findByUserId(idUser);
+        final Optional<Product> productBySku = shoppingCartUser.getListProducts()
+                .stream()
+                .filter(item -> sku.equals(item.getSku()))
+                .findFirst();
+
+        productBySku.orElseThrow(() -> {
+            log.error("Produto não encontrado!");
+            return new ProductNotFoundException("Produto não encontrado!", sku);
+        });
         return productBySku.get();
     }
 
     public ShoppingCart retrieveShoppingCart(Long idUser) {
         log.info("retrieveShoppingCart, idUser={}", idUser);
-
         final ShoppingCart shoppingCartUser = shoppingCartRepository.findByUserId(idUser);
-
         if (shoppingCartUser == null) {
             throw new ShoppingCartNotFoundException("Carrinho não encontrado!", idUser.toString());
         }
-
         return shoppingCartUser;
     }
 
     public ShoppingCart removeShoppingCart(Long idUser) {
         log.info("removeShoppingCart, idUser={}", idUser);
-
-
         final ShoppingCart shoppingCartUser = shoppingCartRepository.findByUserId(idUser);
-
-        if (shoppingCartUser == null){
+        if (shoppingCartUser == null) {
             log.error("removeShoppingCart, não existe este carrinho de compras, idUser={}", idUser);
             throw new ShoppingCartNotFoundException("Não existe este carrinho de compras!", idUser.toString());
         }
-
         shoppingCartRepository.delete(shoppingCartUser);
-
         return shoppingCartUser;
     }
-
 
 }

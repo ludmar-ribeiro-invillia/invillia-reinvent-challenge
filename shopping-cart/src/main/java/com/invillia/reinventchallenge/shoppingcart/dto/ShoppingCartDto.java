@@ -20,6 +20,4 @@ public class ShoppingCartDto {
 
     private BigDecimal total;
 
-
-
 }

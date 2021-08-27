@@ -42,6 +42,4 @@ public class ShoppingCart{
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "shoppingCart", orphanRemoval=true, fetch = FetchType.EAGER)
     private List<Product> listProducts;
 
-
-
 }

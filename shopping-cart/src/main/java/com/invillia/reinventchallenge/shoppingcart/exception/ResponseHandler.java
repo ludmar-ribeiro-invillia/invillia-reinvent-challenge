@@ -13,13 +13,7 @@ public class ResponseHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = {UserNotFoundException.class})
     protected ResponseEntity<Object> handleNotFoundUser(UserNotFoundException ex, WebRequest request){
-        ErrorResponse errorResponse = new ErrorResponse();
-        errorResponse.setMessage(ex.getMessage());
-        errorResponse.setError_key(ex.ERROR_KEY);
-        errorResponse.setResource(ex.RESOURCE);
-        errorResponse.setResource_key(ex.getResourceKey());
-
-
+        final ErrorResponse errorResponse = constructErrorResponse(ex.getMessage(), ex.ERROR_KEY, ex.RESOURCE, ex.getResourceKey());
 
         return handleExceptionInternal(ex, errorResponse,
                 new HttpHeaders(), HttpStatus.NOT_FOUND, request);
@@ -27,13 +21,7 @@ public class ResponseHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = {ShoppingCartNotFoundException.class})
     protected ResponseEntity<Object> handleNotFoundShoppingCart(ShoppingCartNotFoundException ex, WebRequest request){
-        ErrorResponse errorResponse = new ErrorResponse();
-        errorResponse.setMessage(ex.getMessage());
-        errorResponse.setError_key(ex.ERROR_KEY);
-        errorResponse.setResource(ex.RESOURCE);
-        errorResponse.setResource_key(ex.getResourceKey());
-
-
+        final ErrorResponse errorResponse = constructErrorResponse(ex.getMessage(), ex.ERROR_KEY, ex.RESOURCE, ex.getResourceKey());
 
         return handleExceptionInternal(ex, errorResponse,
                 new HttpHeaders(), HttpStatus.NOT_FOUND, request);
@@ -41,15 +29,20 @@ public class ResponseHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = {ProductNotFoundException.class})
     protected ResponseEntity<Object> handleNotFoundProduct(ProductNotFoundException ex, WebRequest request){
-        ErrorResponse errorResponse = new ErrorResponse();
-        errorResponse.setMessage(ex.getMessage());
-        errorResponse.setError_key(ex.ERROR_KEY);
-        errorResponse.setResource(ex.RESOURCE);
-        errorResponse.setResource_key(ex.getResourceKey());
-
-
+        final ErrorResponse errorResponse = constructErrorResponse(ex.getMessage(), ex.ERROR_KEY, ex.RESOURCE, ex.getResourceKey());
 
         return handleExceptionInternal(ex, errorResponse,
                 new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
+
+    private ErrorResponse constructErrorResponse(final String message, final String errorKey, final String resource, final String resourceKey){
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setMessage(message);
+        errorResponse.setError_key(errorKey);
+        errorResponse.setResource(resource);
+        errorResponse.setResource_key(resourceKey);
+
+        return errorResponse;
+    }
 }
+

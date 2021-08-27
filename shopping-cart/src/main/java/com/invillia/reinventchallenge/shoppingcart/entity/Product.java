@@ -33,6 +33,12 @@ public class Product {
     private BigDecimal price;
     private Integer quantity;
 
+    public Product(String sku, String name, BigDecimal price, Integer quantity) {
+        this.sku = sku;
+        this.name = name;
+        this.price = price;
+        this.quantity = quantity;
+    }
 
     @PrePersist
     public void prePersist() {
@@ -48,16 +54,11 @@ public class Product {
         }
     }
 
-
     @ManyToOne
     @JoinColumn(name = "idShoppingCart", referencedColumnName = "idShoppingCart")
     private ShoppingCart shoppingCart;
 
     public BigDecimal calculateSumProduct (){
-        BigDecimal sum = price.multiply(BigDecimal.valueOf(quantity));
-
-        return sum;
+        return price.multiply(BigDecimal.valueOf(quantity));
     }
-
-
 }

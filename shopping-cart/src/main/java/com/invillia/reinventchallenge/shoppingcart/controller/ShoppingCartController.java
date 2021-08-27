@@ -6,7 +6,6 @@ import com.invillia.reinventchallenge.shoppingcart.dto.ShoppingCartDto;
 import com.invillia.reinventchallenge.shoppingcart.entity.Product;
 import com.invillia.reinventchallenge.shoppingcart.entity.ShoppingCart;
 import com.invillia.reinventchallenge.shoppingcart.service.ShoppingCartService;
-import javassist.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,20 +39,19 @@ public class ShoppingCartController {
     private ModelMapper modelMapper;
 
     @GetMapping
-    public ResponseEntity<List<ShoppingCartDto>> getShoppingCartList(){
+    public ResponseEntity<List<ShoppingCartDto>> getShoppingCartList() {
         log.info("getShoppingCartList");
-        final List<ShoppingCart> shoppingCartAll = shoppingCartService.getShoppingCartAll();
-        log.info("getShoppingCartList, shoppingCartAll={}",shoppingCartAll);
-        final List<ShoppingCartDto> listDto = shoppingCartAll.stream()
-                .map(shoppingCart -> mapperShoppingCartToShoppingCartDto(shoppingCart))
-                .collect(Collectors.toList());
-        log.info("listDto={}",listDto);
+        final List<ShoppingCart> shoppingCartAll = shoppingCartService.getAll();
+        log.info("getShoppingCartList, shoppingCartAll={}", shoppingCartAll);
 
-
-        if (shoppingCartAll.isEmpty()){
+        if (shoppingCartAll.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
 
+        final List<ShoppingCartDto> listDto = shoppingCartAll.stream()
+                .map(shoppingCart -> mapperShoppingCartToShoppingCartDto(shoppingCart))
+                .collect(Collectors.toList());
+        log.info("listDto={}", listDto);
         return ResponseEntity.ok().body(listDto);
     }
 
@@ -61,12 +59,9 @@ public class ShoppingCartController {
     public ResponseEntity<ProductDtoResponse> addItemShoppingCart(
             @PathVariable("user-id") Long idUser,
             @PathVariable("sku") String sku,
-            @Valid @RequestBody ProductDtoRequest productDto)  {
+            @Valid @RequestBody ProductDtoRequest productDto) {
         log.info("idUser={}, sku={}, productDto={}", idUser, sku, productDto);
-
         final Product product = shoppingCartService.addProduct(idUser, sku, productDto);
-
-
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(mapperProductToProductResponse(product));
     }
@@ -75,11 +70,9 @@ public class ShoppingCartController {
     public ResponseEntity<ProductDtoResponse> putItemShoppingCart(
             @PathVariable("user-id") Long idUser,
             @PathVariable("sku") String sku,
-            @RequestBody ProductDtoRequest productDto){
+            @RequestBody ProductDtoRequest productDto) {
         log.info("putItemShoppingCart, idUser={}, sku={}, productDto={}", idUser, sku, productDto);
-        final Product product = shoppingCartService.putProductService(idUser, sku, productDto);
-
-
+        final Product product = shoppingCartService.putProduct(idUser, sku, productDto);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(mapperProductToProductResponse(product));
     }
@@ -88,80 +81,64 @@ public class ShoppingCartController {
     public ResponseEntity<ProductDtoResponse> editNumberOfItem(
             @PathVariable("user-id") Long idUser,
             @PathVariable("sku") String sku,
-            @RequestParam("quantity") Integer quantity){
+            @RequestParam("quantity") Integer quantity) {
         log.info("editNumberOfItem, idUser={}, sku={}, newQuantity={}", idUser, sku, quantity);
-
         final Product product = shoppingCartService.editNumberOfItem(idUser, sku, quantity);
-
         return ResponseEntity.ok().body(mapperProductToProductResponse(product));
     }
 
     @DeleteMapping(value = "/{user-id}/items/{sku}")
     public ResponseEntity<ProductDtoResponse> removeProductShoppingCart(
             @PathVariable("user-id") Long idUser,
-            @PathVariable("sku") String sku){
+            @PathVariable("sku") String sku) {
         log.info("removeProductShoppingCart, idUser={}, sku={}", idUser, sku);
         final Product product = shoppingCartService.removeProductShoppingCart(idUser, sku);
-
         return ResponseEntity.ok().body(mapperProductToProductResponse(product));
     }
 
     @GetMapping(value = "/{user-id}/items/{sku}")
     public ResponseEntity<ProductDtoResponse> retrieveProductShoppingCart(
             @PathVariable("user-id") Long idUser,
-            @PathVariable("sku") String sku){
-
+            @PathVariable("sku") String sku) {
         log.info("retrieveProductShoppingCart, idUser={}, sku={}", idUser, sku);
-
         final Product product = shoppingCartService.retrieveProductShoppingCart(idUser, sku);
         return ResponseEntity.ok().body(mapperProductToProductResponse(product));
     }
 
     @GetMapping(value = "/{user-id}")
-    public ResponseEntity<ShoppingCartDto> retrieveShoppingCart(@PathVariable("user-id") Long idUser){
+    public ResponseEntity<ShoppingCartDto> retrieveShoppingCart(@PathVariable("user-id") Long idUser) {
         log.info("retrieveShoppingCart, idUser={}", idUser);
-
         final ShoppingCart shoppingCart = shoppingCartService.retrieveShoppingCart(idUser);
         return ResponseEntity.ok().body(mapperShoppingCartToShoppingCartDto(shoppingCart));
     }
 
     @DeleteMapping(value = "/{user-id}")
-    public ResponseEntity<ShoppingCartDto> removeShoppingCart(@PathVariable  ("user-id")Long idUser){
+    public ResponseEntity<ShoppingCartDto> removeShoppingCart(@PathVariable("user-id") Long idUser) {
         log.info("removeShoppingCart, idUser={}", idUser);
-
         final ShoppingCart shoppingCart = shoppingCartService.removeShoppingCart(idUser);
-
         return ResponseEntity.ok().body(mapperShoppingCartToShoppingCartDto(shoppingCart));
     }
 
-
-    private ProductDtoResponse mapperProductToProductResponse(Product product){
-         ProductDtoResponse productDto = modelMapper.map(product, ProductDtoResponse.class);
-         return productDto;
+    private ProductDtoResponse mapperProductToProductResponse(Product product) {
+        return modelMapper.map(product, ProductDtoResponse.class);
     }
 
-    private Product mapperProductDtoToProduct(ProductDtoResponse productDto){
-        Product product = modelMapper.map(productDto, Product.class);
-        return product;
-
+    private Product mapperProductDtoToProduct(ProductDtoResponse productDto) {
+        return modelMapper.map(productDto, Product.class);
     }
 
-    private ShoppingCartDto mapperShoppingCartToShoppingCartDto(ShoppingCart shoppingCart){
+    private ShoppingCartDto mapperShoppingCartToShoppingCartDto(ShoppingCart shoppingCart) {
         ShoppingCartDto shoppingCartDto = modelMapper.map(shoppingCart, ShoppingCartDto.class);
         BigDecimal sum = BigDecimal.ZERO;
-
-        for (Product product: shoppingCart.getListProducts()) {
+        for (Product product : shoppingCart.getListProducts()) {
             sum = sum.add(product.calculateSumProduct());
         }
-
         shoppingCartDto.setTotal(sum);
         return shoppingCartDto;
     }
 
-    private ShoppingCart mapperShoppingCartDtoToShoppingCart(ShoppingCartDto shoppingCartDto){
+    private ShoppingCart mapperShoppingCartDtoToShoppingCart(ShoppingCartDto shoppingCartDto) {
         ShoppingCart shoppingCart = modelMapper.map(shoppingCartDto, ShoppingCart.class);
-        return shoppingCart;
+        return modelMapper.map(shoppingCartDto, ShoppingCart.class);
     }
-
-
 }
