@@ -54,4 +54,14 @@ public class ShoppingCartItemResponse {
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
+
+    @Override
+    public String toString() {
+        return
+                "sku=" + sku +
+                ", price=" + price +
+                ", name='" + name + '\'' +
+                ", quantity=" + quantity +
+                '}';
+    }
 }
