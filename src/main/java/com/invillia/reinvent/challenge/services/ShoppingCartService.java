@@ -11,6 +11,7 @@ import com.invillia.reinvent.challenge.services.exceptions.ResourceNotFoundExcep
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -53,58 +54,45 @@ public class ShoppingCartService {
         itemRepository.save(shoppingCartItem);
     }
 
-    public void removeItem(Long userId, Long sku){
+    public ShoppingCartItem removeItem(Long userId, Long sku){
 
         User user = userService.findById(userId);
 
         Optional<ShoppingCart> optShoppingCart = shoppingCartRepository.findByUserId(userId);
-        ShoppingCart shoppingCart = new ShoppingCart();
-        if(optShoppingCart.isPresent()){
-            shoppingCart = optShoppingCart.get();
-        } else {
-            optShoppingCart.orElseThrow(() -> new ResourceNotFoundException(userId));
-        }
+        ShoppingCart shoppingCart = optShoppingCart.orElseThrow(() -> new ResourceNotFoundException(userId));
 
-        Product product = productService.findById(sku);
-
-        ShoppingCartItem shoppingCartItem = new ShoppingCartItem();
-        shoppingCartItem.setShoppingCart(shoppingCart);
-        shoppingCartItem.setProduct(product);
+        Optional<ShoppingCartItem> optShoppingCartItem = itemRepository.findByProductSkuAndShoppingCart(sku, shoppingCart);
+        ShoppingCartItem shoppingCartItem = optShoppingCartItem.orElseThrow(() -> new ResourceNotFoundException());
 
         itemRepository.delete(shoppingCartItem);
+        return shoppingCartItem;
 
     }
 
-    public void findById(Long userId){
+    public void findByUserIdAndSku(Long userId, Long sku, AddShoppingCartItemRequest){
 
         User user = userService.findById(userId);
 
         Optional<ShoppingCart> optShoppingCart = shoppingCartRepository.findByUserId(userId);
-        ShoppingCart shoppingCart;
-        if(optShoppingCart.isPresent()){
-            shoppingCart = optShoppingCart.get();
-            shoppingCart.getTotal();
-        } else {
-            optShoppingCart.orElseThrow(() -> new ResourceNotFoundException(userId));
-        }
+        ShoppingCart shoppingCart = optShoppingCart.orElseThrow(() -> new ResourceNotFoundException(userId));
+
+        Optional<ShoppingCart> optShoppingCart = itemRepository.findByProductSkuAndShoppingCart(sku, sku);
+        ShoppingCart shoppingCart = optShoppingCart.orElseThrow(() -> new ResourceNotFoundException(userId));
+
 
     }
 
-    public void removeShoppingCart(Long userId){
+    public List<ShoppingCartItem> removeShoppingCart(Long userId){
 
         User user = userService.findById(userId);
 
         Optional<ShoppingCart> optShoppingCart = shoppingCartRepository.findByUserId(userId);
-        ShoppingCart shoppingCart;
-        if(optShoppingCart.isPresent()){
-            shoppingCart = optShoppingCart.get();
-            itemRepository.deleteById(userId);
-        }
-        else {
-            optShoppingCart.orElseThrow(() -> new ResourceNotFoundException(userId));
-        }
+        ShoppingCart shoppingCart = optShoppingCart.orElseThrow(() -> new ResourceNotFoundException(userId));
 
+        List<ShoppingCartItem> items = itemRepository.findByShoppingCart(shoppingCart);
 
+        itemRepository.deleteAll(items);
+        return items;
 
     }
 

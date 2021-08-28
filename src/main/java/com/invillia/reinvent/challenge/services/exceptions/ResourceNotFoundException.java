@@ -7,7 +7,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class ResourceNotFoundException extends RuntimeException{
 
     public ResourceNotFoundException(Object id){
-
         super("There is no resource registered with this ID " + id );
+    }
+
+    public ResourceNotFoundException(){
+        super("Not found Resource ");
     }
 }
