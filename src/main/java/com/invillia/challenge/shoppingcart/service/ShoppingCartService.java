@@ -1,5 +1,6 @@
 package com.invillia.challenge.shoppingcart.service;
 
+import com.invillia.challenge.shoppingcart.dto.CartDto;
 import com.invillia.challenge.shoppingcart.dto.ItemDto;
 import com.invillia.challenge.shoppingcart.dto.ItemResponseDto;
 import com.invillia.challenge.shoppingcart.entity.Cart;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -63,4 +66,37 @@ public class ShoppingCartService {
         return new ItemResponseDto(sku, cart.getProduct().getName(), cart.getPrice(), cart.getQuantity());
     }
 
+    public ItemResponseDto editQuantity(Integer userId, String sku, Integer quantity) {
+        Cart cart = cartRepository.findByProduct_SkuAndCustomer_Id(sku, userId);
+        cart.setQuantity(quantity);
+        cartRepository.save(cart);
+        return new ItemResponseDto(sku, cart.getProduct().getName(), cart.getPrice(), cart.getQuantity());
+    }
+
+    public ItemResponseDto getItem(Integer userId, String sku) {
+        Cart cart = cartRepository.findByProduct_SkuAndCustomer_Id(sku, userId);
+        return new ItemResponseDto(sku, cart.getProduct().getName(), cart.getPrice(), cart.getQuantity());
+    }
+
+    public CartDto getCart(Integer userId) {
+        return getCartByUserId(userId);
+    }
+
+    public CartDto deleteCart(Integer userId) {
+        final CartDto cart = getCartByUserId(userId);
+        cartRepository.deleteByCustomer_Id(userId);
+        return cart;
+    }
+
+    public CartDto getCartByUserId(Integer userId) {
+        List<Cart> carts = cartRepository.findByCustomer_Id(userId);
+        BigDecimal total = BigDecimal.ZERO;
+        List<ItemResponseDto> listItemResponseDto = new ArrayList<ItemResponseDto>();
+        for(Cart cart: carts) {
+            total = total.add(cart.getPrice().multiply(new BigDecimal(cart.getQuantity())));
+            ItemResponseDto itemResponse = new ItemResponseDto(cart.getProduct().getSku(), cart.getProduct().getName(), cart.getPrice(), cart.getQuantity());
+            listItemResponseDto.add(itemResponse);
+        }
+        return new CartDto(listItemResponseDto, total);
+    }
 }
