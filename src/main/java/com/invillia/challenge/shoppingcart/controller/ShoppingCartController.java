@@ -44,11 +44,17 @@ public class ShoppingCartController {
         final ItemResponseDto itemResponse = shoppingCartService.deleteItem(userId, sku);
         return ResponseEntity.ok().body(itemResponse);
     }
-//
-//    @GetMapping(path = "{user-id}")
-//    public ResponseEntity<CartDto> getCart (@PathVariable("user-id") String userId) {
-//
-//    }
+
+    @GetMapping(path = "/{user-id}/item/{SKU}")
+    public ResponseEntity<ItemResponseDto> getItem (@PathVariable("user-id") Integer userId, @PathVariable("SKU") String sku) {
+        final ItemResponseDto itemResponse = shoppingCartService.getItem(userId, sku);
+        return ResponseEntity.ok().body(itemResponse);
+    }
+
+    @GetMapping(path = "/{user-id}")
+    public ResponseEntity<CartDto> getCart (@PathVariable("user-id") Integer userId) {
+        return ResponseEntity.ok().body(shoppingCartService.getCart(userId));
+    }
 
     private ItemResponseDto convertProductToItemResponseDto(Cart cart) {
         return modelMapper.map(cart, ItemResponseDto.class);
