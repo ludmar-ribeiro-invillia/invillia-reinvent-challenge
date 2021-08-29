@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public class CartProductNotFoundException extends RuntimeException{
     protected final String RESOURCE= "Cart";
-    protected final String ERROR_KEY= "cart already have a product with this sku";
+    protected final String ERROR_KEY= "cart.product.sku.not.found";
     private final String resourceKey;
 
     public CartProductNotFoundException(String message, String resourceKey) {

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.CONFLICT)
 public class CartAlreadyHasProductException extends RuntimeException {
     protected final String RESOURCE= "Cart";
-    protected final String ERROR_KEY= "cart already have a product with this sku";
+    protected final String ERROR_KEY= "cart.already.have.product";
     private final String resourceKey;
 
     public CartAlreadyHasProductException(String message, String resourceKey) {

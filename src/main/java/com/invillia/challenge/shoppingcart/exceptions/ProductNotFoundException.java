@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public class ProductNotFoundException extends RuntimeException {
     protected final String RESOURCE= "product";
-    protected final String ERROR_KEY= "product was not found";
+    protected final String ERROR_KEY= "product.not.found";
     private final String resourceKey;
 
     public ProductNotFoundException(String message, String resourceKey) {
