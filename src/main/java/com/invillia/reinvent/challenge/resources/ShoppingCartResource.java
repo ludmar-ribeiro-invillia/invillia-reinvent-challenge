@@ -19,6 +19,7 @@ public class ShoppingCartResource {
     @Autowired
     private ShoppingCartService service;
 
+    // OK
     @PostMapping("{userId}/items/{sku}")
     public ResponseEntity<ShoppingCartItemResponse> addItem(@PathVariable Long userId, @PathVariable Long sku,
                                                             @RequestBody AddShoppingCartItemRequest request){
@@ -35,6 +36,7 @@ public class ShoppingCartResource {
 
     }
 
+    // OK
     @DeleteMapping("{userId}/items/{sku}")
     public ResponseEntity<ShoppingCartItemResponse> removeItem(@PathVariable Long userId, @PathVariable Long sku) {
 
@@ -51,17 +53,7 @@ public class ShoppingCartResource {
 
     }
 
-    @PutMapping("{userId}/items/{sku}")
-    public ResponseEntity<ShoppingCartItemResponse> editItems(@PathVariable Long userId, @PathVariable Long sku,
-                                                                       @RequestBody AddShoppingCartItemRequest request){
-
-         service.editItems(userId, sku, request);
-
-        ShoppingCartItemResponse shoppingCartItemResponse = new ShoppingCartItemResponse();
-
-        return new ResponseEntity<>(shoppingCartItemResponse, HttpStatus.OK);
-    }
-
+    // OK
     @DeleteMapping("{userId}")
     public ResponseEntity<ListShoppingCartItemResponse> removeAll(@PathVariable Long userId) {
 
@@ -90,24 +82,25 @@ public class ShoppingCartResource {
     }
 
     @GetMapping("{userId}")
-    public ResponseEntity<ShoppingCartItemResponse> findShoppingCart(@PathVariable Long userId){
+    public ResponseEntity<ListShoppingCartItemResponse> listShoppingCart(@PathVariable Long userId){
 
-        service.getShoppingCart(userId);
-        ShoppingCartItemResponse shoppingCartItemResponse = new ShoppingCartItemResponse();
+        List<ShoppingCartItem> shoppingCartItemList = service.getShoppingCart(userId);
 
-        return new ResponseEntity<>(shoppingCartItemResponse, HttpStatus.OK);
+        ListShoppingCartItemResponse listShoppingCartItemResponse = new ListShoppingCartItemResponse();
+
+        for(ShoppingCartItem item : shoppingCartItemList){
+            ShoppingCartItemResponse shoppingCartItemResponse = new ShoppingCartItemResponse();
+            shoppingCartItemResponse.setSku(item.getProduct().getSku());
+            shoppingCartItemResponse.setName(item.getProduct().getName());
+            shoppingCartItemResponse.setPrice(item.getProduct().getPrice());
+            shoppingCartItemResponse.setQuantity(item.getQuantity());
+
+            listShoppingCartItemResponse.getItems().add(shoppingCartItemResponse);
+
+        }
+
+        return new ResponseEntity<>(listShoppingCartItemResponse, HttpStatus.OK);
     }
-
-    @GetMapping("{userId}/items/{sku}")
-    public ResponseEntity<ShoppingCartItemResponse> findProductShoppingCart(@PathVariable Long userId, @PathVariable Long sku){
-
-        service.getProductShoppingCart(userId, sku);
-
-        ShoppingCartItemResponse shoppingCartItemResponse = new ShoppingCartItemResponse();
-
-        return new ResponseEntity<>(shoppingCartItemResponse, HttpStatus.OK);
-    }
-
 
  }
 

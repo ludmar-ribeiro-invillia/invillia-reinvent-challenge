@@ -12,6 +12,7 @@ public class ListShoppingCartItemResponse {
     public ListShoppingCartItemResponse() {
     }
 
+
     public ListShoppingCartItemResponse(List<ShoppingCartItemResponse> items, Double total) {
         this.items = items;
         this.total = total;

@@ -69,24 +69,6 @@ public class ShoppingCartService {
 
     }
 
-    public void editItems(Long userId, Long sku, AddShoppingCartItemRequest request){
-
-        User user = userService.findById(userId);
-
-        Optional<ShoppingCart> optShoppingCart = shoppingCartRepository.findByUserId(userId);
-        ShoppingCart shoppingCart = optShoppingCart.orElseThrow(() -> new ResourceNotFoundException(userId));
-
-        Optional<ShoppingCartItem> optShoppingCartItem = itemRepository.findByProductSkuAndShoppingCart(sku, shoppingCart);
-        ShoppingCartItem shoppingCartItem = optShoppingCartItem.orElseThrow(() -> new ResourceNotFoundException());
-
-        shoppingCartItem.setQuantity(request.getQuantity());
-        // shoppingCartItem.setProduct();
-        shoppingCartItem.setShoppingCart(shoppingCart);
-
-        itemRepository.save(shoppingCartItem);
-
-    }
-
     public List<ShoppingCartItem> removeAll(Long userId){
 
         User user = userService.findById(userId);
@@ -101,13 +83,20 @@ public class ShoppingCartService {
 
     }
 
-    public void getProductShoppingCart(Long userId, Long sku){
+    public List<ShoppingCartItem> getShoppingCart(Long userId){
 
+        User user = userService.findById(userId);
+
+        Optional<ShoppingCart> optShoppingCart = shoppingCartRepository.findByUserId(userId);
+        ShoppingCart shoppingCart = optShoppingCart.orElseThrow(() -> new ResourceNotFoundException(userId));
+
+        List<ShoppingCartItem> items = itemRepository.findByShoppingCart(shoppingCart);
+
+
+        return items;
     }
 
-    public void getShoppingCart(Long userId){
 
-    }
 
 
 }
