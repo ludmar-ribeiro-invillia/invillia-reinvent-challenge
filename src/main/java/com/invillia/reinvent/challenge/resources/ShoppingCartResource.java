@@ -2,12 +2,15 @@ package com.invillia.reinvent.challenge.resources;
 
 import com.invillia.reinvent.challenge.entities.ShoppingCartItem;
 import com.invillia.reinvent.challenge.request.AddShoppingCartItemRequest;
+import com.invillia.reinvent.challenge.response.ListShoppingCartItemResponse;
 import com.invillia.reinvent.challenge.response.ShoppingCartItemResponse;
 import com.invillia.reinvent.challenge.services.ShoppingCartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/shopping-cart")
@@ -48,11 +51,11 @@ public class ShoppingCartResource {
 
     }
 
-    @GetMapping("{userId}/items/{sku}")
-    public ResponseEntity<ShoppingCartItemResponse> findByUserIdAndSku(@PathVariable Long userId, @PathVariable Long sku,
+    @PutMapping("{userId}/items/{sku}")
+    public ResponseEntity<ShoppingCartItemResponse> editItems(@PathVariable Long userId, @PathVariable Long sku,
                                                                        @RequestBody AddShoppingCartItemRequest request){
 
-         service.findByUserIdAndSku(userId, sku, request);
+         service.editItems(userId, sku, request);
 
         ShoppingCartItemResponse shoppingCartItemResponse = new ShoppingCartItemResponse();
 
@@ -60,14 +63,49 @@ public class ShoppingCartResource {
     }
 
     @DeleteMapping("{userId}")
-    public ResponseEntity<ShoppingCartItemResponse> removeShoppingCart(@PathVariable Long userId) {
+    public ResponseEntity<ListShoppingCartItemResponse> removeAll(@PathVariable Long userId) {
 
-        service.removeShoppingCart(userId);
+        List<ShoppingCartItem> shoppingCartItemList = service.removeAll(userId);
+
+        ListShoppingCartItemResponse listShoppingCartItemResponse = new ListShoppingCartItemResponse();
+
+        Double total = 0.0;
+
+        for(ShoppingCartItem item : shoppingCartItemList){
+            ShoppingCartItemResponse shoppingCartItemResponse = new ShoppingCartItemResponse();
+            shoppingCartItemResponse.setSku(item.getProduct().getSku());
+            shoppingCartItemResponse.setName(item.getProduct().getName());
+            shoppingCartItemResponse.setPrice(item.getProduct().getPrice());
+            shoppingCartItemResponse.setQuantity(item.getQuantity());
+
+            listShoppingCartItemResponse.getItems().add(shoppingCartItemResponse);
+
+            total += shoppingCartItemResponse.getPrice() * shoppingCartItemResponse.getQuantity();
+        }
+
+        listShoppingCartItemResponse.setTotal(total);
+
+        return new ResponseEntity<>(listShoppingCartItemResponse, HttpStatus.OK);
+
+    }
+
+    @GetMapping("{userId}")
+    public ResponseEntity<ShoppingCartItemResponse> findShoppingCart(@PathVariable Long userId){
+
+        service.getShoppingCart(userId);
+        ShoppingCartItemResponse shoppingCartItemResponse = new ShoppingCartItemResponse();
+
+        return new ResponseEntity<>(shoppingCartItemResponse, HttpStatus.OK);
+    }
+
+    @GetMapping("{userId}/items/{sku}")
+    public ResponseEntity<ShoppingCartItemResponse> findProductShoppingCart(@PathVariable Long userId, @PathVariable Long sku){
+
+        service.getProductShoppingCart(userId, sku);
 
         ShoppingCartItemResponse shoppingCartItemResponse = new ShoppingCartItemResponse();
 
         return new ResponseEntity<>(shoppingCartItemResponse, HttpStatus.OK);
-
     }
 
 

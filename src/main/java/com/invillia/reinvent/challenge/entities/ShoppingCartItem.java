@@ -64,9 +64,5 @@ public class ShoppingCartItem implements Serializable {
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
-
-    public Double getSubTotal(){
-        return quantity * product.getPrice();
-    }
 }
 

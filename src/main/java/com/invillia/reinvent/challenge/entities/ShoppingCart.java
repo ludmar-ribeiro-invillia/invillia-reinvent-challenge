@@ -53,12 +53,4 @@ public class ShoppingCart implements Serializable {
         this.items = items;
     }
 
-    public double getTotal(){
-        double sum = 0.0;
-        for(ShoppingCartItem x: items){
-            sum += x.getSubTotal();
-        }
-        return sum;
-    }
-
 }

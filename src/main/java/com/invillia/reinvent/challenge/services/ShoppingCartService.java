@@ -69,20 +69,25 @@ public class ShoppingCartService {
 
     }
 
-    public void findByUserIdAndSku(Long userId, Long sku, AddShoppingCartItemRequest){
+    public void editItems(Long userId, Long sku, AddShoppingCartItemRequest request){
 
         User user = userService.findById(userId);
 
         Optional<ShoppingCart> optShoppingCart = shoppingCartRepository.findByUserId(userId);
         ShoppingCart shoppingCart = optShoppingCart.orElseThrow(() -> new ResourceNotFoundException(userId));
 
-        Optional<ShoppingCart> optShoppingCart = itemRepository.findByProductSkuAndShoppingCart(sku, sku);
-        ShoppingCart shoppingCart = optShoppingCart.orElseThrow(() -> new ResourceNotFoundException(userId));
+        Optional<ShoppingCartItem> optShoppingCartItem = itemRepository.findByProductSkuAndShoppingCart(sku, shoppingCart);
+        ShoppingCartItem shoppingCartItem = optShoppingCartItem.orElseThrow(() -> new ResourceNotFoundException());
 
+        shoppingCartItem.setQuantity(request.getQuantity());
+        // shoppingCartItem.setProduct();
+        shoppingCartItem.setShoppingCart(shoppingCart);
+
+        itemRepository.save(shoppingCartItem);
 
     }
 
-    public List<ShoppingCartItem> removeShoppingCart(Long userId){
+    public List<ShoppingCartItem> removeAll(Long userId){
 
         User user = userService.findById(userId);
 
@@ -95,5 +100,14 @@ public class ShoppingCartService {
         return items;
 
     }
+
+    public void getProductShoppingCart(Long userId, Long sku){
+
+    }
+
+    public void getShoppingCart(Long userId){
+
+    }
+
 
 }
