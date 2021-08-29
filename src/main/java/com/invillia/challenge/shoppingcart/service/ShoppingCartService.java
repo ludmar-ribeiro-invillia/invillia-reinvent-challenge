@@ -46,7 +46,7 @@ public class ShoppingCartService {
         final Customer customer = customerRepository.findById(userId)
                 .orElseThrow();
         final Product product = new Product(itemDto.getPrice(), itemDto.getName(), sku);
-        final Cart cart = new Cart(product, customer, itemDto.getQuantity(), product.getPrice());
+        final Cart cart = new Cart(product, customer, itemDto.getQuantity());
         productRepository.save(product);
         cartRepository.save(cart);
         return new ItemResponseDto(sku, itemDto.getName(), itemDto.getPrice(), itemDto.getQuantity());
@@ -54,8 +54,9 @@ public class ShoppingCartService {
 
     public ItemResponseDto editItem(Integer userId, String sku, ItemDto itemDto) {
         Cart cart = cartRepository.findByProduct_SkuAndCustomer_Id(sku, userId);
-        cart.setPrice(itemDto.getPrice());
+        cart.getProduct().setPrice(itemDto.getPrice());
         cart.setQuantity(itemDto.getQuantity());
+        productRepository.save(cart.getProduct());
         cartRepository.save(cart);
         return new ItemResponseDto(sku, itemDto.getName(), itemDto.getPrice(), itemDto.getQuantity());
     }
@@ -63,19 +64,19 @@ public class ShoppingCartService {
     public ItemResponseDto deleteItem(Integer userId, String sku) {
         Cart cart = cartRepository.findByProduct_SkuAndCustomer_Id(sku, userId);
         cartRepository.delete(cart);
-        return new ItemResponseDto(sku, cart.getProduct().getName(), cart.getPrice(), cart.getQuantity());
+        return new ItemResponseDto(sku, cart.getProduct().getName(), cart.getProduct().getPrice(), cart.getQuantity());
     }
 
     public ItemResponseDto editQuantity(Integer userId, String sku, Integer quantity) {
         Cart cart = cartRepository.findByProduct_SkuAndCustomer_Id(sku, userId);
         cart.setQuantity(quantity);
         cartRepository.save(cart);
-        return new ItemResponseDto(sku, cart.getProduct().getName(), cart.getPrice(), cart.getQuantity());
+        return new ItemResponseDto(sku, cart.getProduct().getName(), cart.getProduct().getPrice(), cart.getQuantity());
     }
 
     public ItemResponseDto getItem(Integer userId, String sku) {
         Cart cart = cartRepository.findByProduct_SkuAndCustomer_Id(sku, userId);
-        return new ItemResponseDto(sku, cart.getProduct().getName(), cart.getPrice(), cart.getQuantity());
+        return new ItemResponseDto(sku, cart.getProduct().getName(), cart.getProduct().getPrice(), cart.getQuantity());
     }
 
     public CartDto getCart(Integer userId) {
@@ -93,8 +94,8 @@ public class ShoppingCartService {
         BigDecimal total = BigDecimal.ZERO;
         List<ItemResponseDto> listItemResponseDto = new ArrayList<ItemResponseDto>();
         for(Cart cart: carts) {
-            total = total.add(cart.getPrice().multiply(new BigDecimal(cart.getQuantity())));
-            ItemResponseDto itemResponse = new ItemResponseDto(cart.getProduct().getSku(), cart.getProduct().getName(), cart.getPrice(), cart.getQuantity());
+            total = total.add(cart.getProduct().getPrice().multiply(new BigDecimal(cart.getQuantity())));
+            ItemResponseDto itemResponse = new ItemResponseDto(cart.getProduct().getSku(), cart.getProduct().getName(), cart.getProduct().getPrice(), cart.getQuantity());
             listItemResponseDto.add(itemResponse);
         }
         return new CartDto(listItemResponseDto, total);

@@ -11,7 +11,7 @@ public class Cart {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "sku", referencedColumnName = "sku", nullable = false, unique = true)
+    @JoinColumn(name = "sku", referencedColumnName = "sku", nullable = false)
     private Product product;
 
     @ManyToOne()
@@ -20,16 +20,13 @@ public class Cart {
 
     private Integer quantity;
 
-    private BigDecimal price;
-
     public Cart() {
     }
 
-    public Cart(Product product, Customer customer, Integer quantity, BigDecimal price) {
+    public Cart(Product product, Customer customer, Integer quantity) {
         this.product = product;
         this.customer = customer;
         this.quantity = quantity;
-        this.price = price;
     }
 
     public Integer getId() {
@@ -62,14 +59,6 @@ public class Cart {
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
     }
 
     @Override
