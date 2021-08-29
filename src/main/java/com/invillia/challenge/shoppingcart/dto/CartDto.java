@@ -4,34 +4,24 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public class CartDto {
-    private Integer userId;
-    private List<ItemResponseDto> listProducts;
+    private List<ItemResponseDto> items;
     private BigDecimal total;
 
     public CartDto() {
 
     }
 
-    public CartDto(Integer userId, List<ItemResponseDto> listProducts, BigDecimal total) {
-        this.userId = userId;
-        this.listProducts = listProducts;
+    public CartDto(List<ItemResponseDto> items, BigDecimal total) {
+        this.items = items;
         this.total = total;
     }
 
-    public Integer getUserId() {
-        return userId;
+    public List<ItemResponseDto> getItems() {
+        return items;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-    public List<ItemResponseDto> getListProducts() {
-        return listProducts;
-    }
-
-    public void setListProducts(List<ItemResponseDto> listProducts) {
-        this.listProducts = listProducts;
+    public void setItems(List<ItemResponseDto> items) {
+        this.items = items;
     }
 
     public BigDecimal getTotal() {
@@ -45,8 +35,7 @@ public class CartDto {
     @Override
     public String toString() {
         return "CartDto{" +
-                "userId='" + userId + '\'' +
-                ", listProducts=" + listProducts +
+                ", listProducts=" + items +
                 ", total=" + total +
                 '}';
     }
