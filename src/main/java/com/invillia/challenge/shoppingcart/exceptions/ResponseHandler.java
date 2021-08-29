@@ -20,4 +20,37 @@ public class ResponseHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, errorResponse,
                 new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
+
+    @ExceptionHandler(value = {ProductNotFoundException.class})
+    protected ResponseEntity<Object> ProductNotFoundHandler(ProductNotFoundException ex, WebRequest request){
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setMessage(ex.getMessage());
+        errorResponse.setError_key(ex.ERROR_KEY);
+        errorResponse.setResource(ex.RESOURCE);
+        errorResponse.setResource_key(ex.getResourceKey());
+        return handleExceptionInternal(ex, errorResponse,
+                new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+    }
+
+    @ExceptionHandler(value = {CartAlreadyHasProductException.class})
+    protected ResponseEntity<Object> CartAlreadyHasProductHandler(CartAlreadyHasProductException ex, WebRequest request){
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setMessage(ex.getMessage());
+        errorResponse.setError_key(ex.ERROR_KEY);
+        errorResponse.setResource(ex.RESOURCE);
+        errorResponse.setResource_key(ex.getResourceKey());
+        return handleExceptionInternal(ex, errorResponse,
+                new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+    }
+
+    @ExceptionHandler(value = {CartProductNotFoundException.class})
+    protected ResponseEntity<Object> CartProductNotFoundHandler(CartAlreadyHasProductException ex, WebRequest request){
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setMessage(ex.getMessage());
+        errorResponse.setError_key(ex.ERROR_KEY);
+        errorResponse.setResource(ex.RESOURCE);
+        errorResponse.setResource_key(ex.getResourceKey());
+        return handleExceptionInternal(ex, errorResponse,
+                new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+    }
 }
