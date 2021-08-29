@@ -1,5 +1,6 @@
 package com.invillia.challenge.shoppingcart.controller;
 
+import com.invillia.challenge.shoppingcart.dto.CartDto;
 import com.invillia.challenge.shoppingcart.dto.ItemDto;
 import com.invillia.challenge.shoppingcart.dto.ItemResponseDto;
 import com.invillia.challenge.shoppingcart.entity.Cart;
@@ -11,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 @RequestMapping(path="/shopping-cart")
 public class ShoppingCartController {
     @Autowired
@@ -27,17 +28,18 @@ public class ShoppingCartController {
     }
 
     @PutMapping(path = "/{user-id}/items/{SKU}")
-    public ResponseEntity<ItemResponseDto> editItem (@PathVariable("user-id") Integer userId,@PathVariable("SKU") String sku, @RequestBody ItemDto item) {
+    public ResponseEntity<ItemResponseDto> editItem (@PathVariable("user-id") Integer userId, @PathVariable("SKU") String sku, @RequestBody ItemDto item) {
         final ItemResponseDto itemResponse = shoppingCartService.editItem(userId, sku, item);
         return ResponseEntity.ok().body(itemResponse);
     }
-//
-//    @PatchMapping(path = "/{user-id}/items/{SKU}?quantity={quantity}")
-//    public ResponseEntity<ItemResponseDto> editQuantity (@PathVariable("user-id") String userId,@PathVariable("SKU") String sku, @PathVariable("quantity")) {
-//
-//    }
-//
-    @DeleteMapping(path = "{user-id}/items/{SKU}")
+
+    @DeleteMapping(path = "/{user-id}")
+    public ResponseEntity<CartDto> deleteCart (@PathVariable("user-id") Integer userId) {
+        final CartDto cartDto = shoppingCartService.deleteCart(userId);
+        return ResponseEntity.ok().body(cartDto);
+    }
+
+    @DeleteMapping(path = "/{user-id}/items/{SKU}")
     public ResponseEntity<ItemResponseDto> deleteItem (@PathVariable("user-id") Integer userId,@PathVariable("SKU") String sku) {
         final ItemResponseDto itemResponse = shoppingCartService.deleteItem(userId, sku);
         return ResponseEntity.ok().body(itemResponse);
