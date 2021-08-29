@@ -6,6 +6,9 @@ import com.invillia.challenge.shoppingcart.dto.ItemResponseDto;
 import com.invillia.challenge.shoppingcart.entity.Cart;
 import com.invillia.challenge.shoppingcart.entity.Customer;
 import com.invillia.challenge.shoppingcart.entity.Product;
+import com.invillia.challenge.shoppingcart.exceptions.CartAlreadyHasProductException;
+import com.invillia.challenge.shoppingcart.exceptions.CustomerNotFoundException;
+import com.invillia.challenge.shoppingcart.exceptions.ProductNotFoundException;
 import com.invillia.challenge.shoppingcart.repository.CartRepository;
 import com.invillia.challenge.shoppingcart.repository.CustomerRepository;
 import com.invillia.challenge.shoppingcart.repository.ProductRepository;
@@ -100,4 +103,31 @@ public class ShoppingCartService {
         }
         return new CartDto(listItemResponseDto, total);
     }
+
+    public Customer validateCustomer(Integer userId) {
+        Optional<Customer> customer = customerRepository.findById(userId);
+        if(customer.isPresent()) {
+            return customer.get();
+        } else {
+            throw new CustomerNotFoundException("Customer not found, please validate the id sent on the request.", userId.toString());
+        }
+    }
+
+    public Product validateProduct(String sku) {
+        Product product = productRepository.findBySku(sku);
+        if(product == null) {
+            throw new ProductNotFoundException("Product sku not found, please validate the sku sent on the request", sku);
+        }
+        return product;
+    }
+
+    public void validateCartProduct(String sku, Integer userId) {
+        final Cart cart = cartRepository.findByProduct_SkuAndCustomer_Id(sku, userId);
+        if(cart != null) {
+            throw new CartAlreadyHasProductException("The shopping cart already have the same product.", sku);
+        } else {
+
+        }
+    }
+
 }
