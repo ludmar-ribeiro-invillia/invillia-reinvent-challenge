@@ -126,9 +126,25 @@ public class ShoppingCartResource {
 
     @PatchMapping("{userId}/items/{sku}?quantity={quantity}")
     public ResponseEntity<ShoppingCartItemResponse> editQuantity(@PathVariable Long userId, @PathVariable Long sku,
-                                                                 @PathVariable Integer quantity){
+                                                                 @RequestParam(required = false) Integer quantity){
 
         ShoppingCartItem shoppingCartItem =  service.editQuantity(userId, sku, quantity);
+
+        ShoppingCartItemResponse shoppingCartItemResponse= new ShoppingCartItemResponse();
+        shoppingCartItemResponse.setSku(sku);
+        shoppingCartItemResponse.setName(shoppingCartItem.getProduct().getName());
+        shoppingCartItemResponse.setPrice(shoppingCartItem.getProduct().getPrice());
+        shoppingCartItemResponse.setQuantity(shoppingCartItem.getQuantity());
+
+        return new ResponseEntity<>(shoppingCartItemResponse, HttpStatus.OK);
+    }
+
+    //OK
+    @PutMapping("{userId}/items/{sku}")
+    ResponseEntity<ShoppingCartItemResponse> editItem(@PathVariable Long userId, @PathVariable Long sku,
+                                                      @RequestBody AddShoppingCartItemRequest request) {
+
+        ShoppingCartItem shoppingCartItem = service.editItem(userId, sku, request);
 
         ShoppingCartItemResponse shoppingCartItemResponse= new ShoppingCartItemResponse();
         shoppingCartItemResponse.setSku(sku);

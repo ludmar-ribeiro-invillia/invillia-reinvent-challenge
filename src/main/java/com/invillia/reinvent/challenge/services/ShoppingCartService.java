@@ -135,6 +135,28 @@ public class ShoppingCartService {
             optShoppingCartItem.orElseThrow(() -> new ResourceNotFoundException());
         }
 
+        itemRepository.save(shoppingCartItem);
+        return shoppingCartItem;
+    }
+
+
+    public ShoppingCartItem editItem(Long userId, Long sku, AddShoppingCartItemRequest request){
+
+        User user = userService.findById(userId);
+
+        Optional<ShoppingCart> optShoppingCart = shoppingCartRepository.findByUserId(userId);
+        ShoppingCart shoppingCart = optShoppingCart.orElseThrow(() -> new ResourceNotFoundException(userId));
+
+        Optional<ShoppingCartItem> optShoppingCartItem = itemRepository.findByProductSkuAndShoppingCart(sku, shoppingCart);
+        ShoppingCartItem shoppingCartItem = new ShoppingCartItem();
+        if(optShoppingCartItem.isPresent()){
+            shoppingCartItem = optShoppingCartItem.get();
+            shoppingCartItem.setQuantity(request.getQuantity());
+        } else{
+            optShoppingCartItem.orElseThrow(() -> new ResourceNotFoundException());
+
+        }
+        itemRepository.save(shoppingCartItem);
         return shoppingCartItem;
     }
 
