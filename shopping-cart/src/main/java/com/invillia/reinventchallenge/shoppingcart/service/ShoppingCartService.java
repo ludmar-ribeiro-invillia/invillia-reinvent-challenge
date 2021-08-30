@@ -5,6 +5,7 @@ import com.invillia.reinventchallenge.shoppingcart.entity.Product;
 import com.invillia.reinventchallenge.shoppingcart.entity.ShoppingCart;
 import com.invillia.reinventchallenge.shoppingcart.entity.User;
 import com.invillia.reinventchallenge.shoppingcart.exception.ProductNotFoundException;
+import com.invillia.reinventchallenge.shoppingcart.exception.ProductUnprocessableEntityException;
 import com.invillia.reinventchallenge.shoppingcart.exception.ShoppingCartNotFoundException;
 import com.invillia.reinventchallenge.shoppingcart.exception.UserNotFoundException;
 import com.invillia.reinventchallenge.shoppingcart.repository.ProductRepository;
@@ -50,12 +51,23 @@ public class ShoppingCartService {
                     return new UserNotFoundException("Usuário não encontrado!", idUser.toString());
                 });
 
+
         final Product product = new Product(sku, productDto.getName(), productDto.getPrice(), productDto.getQuantity());
 
         ShoppingCart shoppingCartUser = shoppingCartRepository.findByUserId(idUser);
 
-        if (shoppingCartUser != null){
+        if (shoppingCartUser != null) {
             log.info("addProduct Existe Shopping Cart na base");
+            if (sku != null) {
+                final Optional<Product> productBySku = shoppingCartUser.getListProducts()
+                        .stream()
+                        .filter(item -> sku.equals(item.getSku()))
+                        .findFirst();
+                if (productBySku.isPresent()) {
+                    throw new ProductUnprocessableEntityException("Tente outro sku, este já existe!", sku);
+                }
+            }
+
             product.setShoppingCart(shoppingCartUser);
             shoppingCartUser.getListProducts().add(product);
             shoppingCartRepository.save(shoppingCartUser);
@@ -76,7 +88,7 @@ public class ShoppingCartService {
     public Product putProduct(Long idUser, String sku, ProductDtoRequest productDto) {
         log.info("putProductService, idUser={}, sku={}, productDto={}", idUser, sku, productDto);
         final ShoppingCart shoppingCartUser = getShoppingCart(idUser);
-        final Product productBySku = getProductBySku(sku, idUser,shoppingCartUser);
+        final Product productBySku = getProductBySku(sku, idUser, shoppingCartUser);
 
         productBySku.setName(productDto.getName());
         productBySku.setPrice(productDto.getPrice());
@@ -115,14 +127,14 @@ public class ShoppingCartService {
         return shoppingCartUser;
     }
 
-    public ShoppingCart removeShoppingCart( Long idUser) {
+    public ShoppingCart removeShoppingCart(Long idUser) {
         log.info("removeShoppingCart, idUser={}", idUser);
         final ShoppingCart shoppingCartUser = getShoppingCart(idUser);
         shoppingCartRepository.delete(shoppingCartUser);
         return shoppingCartUser;
     }
 
-    private Product getProductBySku(String sku, Long idUser,ShoppingCart shoppingCartUser) {
+    private Product getProductBySku(String sku, Long idUser, ShoppingCart shoppingCartUser) {
 
         final Optional<Product> productBySku = shoppingCartUser.getListProducts()
                 .stream()

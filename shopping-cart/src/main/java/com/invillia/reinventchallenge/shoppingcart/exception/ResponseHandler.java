@@ -35,6 +35,14 @@ public class ResponseHandler extends ResponseEntityExceptionHandler {
                 new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
+    @ExceptionHandler(value = {ProductUnprocessableEntityException.class})
+    protected ResponseEntity<Object> handleUnprocessableEntityProduct(ProductUnprocessableEntityException ex, WebRequest request){
+        final ErrorResponse errorResponse = constructErrorResponse(ex.getMessage(), ex.ERROR_KEY, ex.RESOURCE, ex.getResourceKey());
+
+        return handleExceptionInternal(ex, errorResponse,
+                new HttpHeaders(), HttpStatus.UNPROCESSABLE_ENTITY, request);
+    }
+
     private ErrorResponse constructErrorResponse(final String message, final String errorKey, final String resource, final String resourceKey){
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage(message);
