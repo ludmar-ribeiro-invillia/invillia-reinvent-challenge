@@ -33,7 +33,6 @@ public class ShoppingCartResource {
         shoppingCartItemResponse.setQuantity(request.getQuantity());
 
         return new ResponseEntity<>(shoppingCartItemResponse, HttpStatus.CREATED);
-
     }
 
     // OK
@@ -48,9 +47,7 @@ public class ShoppingCartResource {
         shoppingCartItemResponse.setPrice(shoppingCartItem.getProduct().getPrice());
         shoppingCartItemResponse.setQuantity(shoppingCartItem.getQuantity());
 
-
         return new ResponseEntity<>(shoppingCartItemResponse, HttpStatus.OK);
-
     }
 
     // OK
@@ -85,7 +82,7 @@ public class ShoppingCartResource {
     @GetMapping("{userId}")
     public ResponseEntity<ListShoppingCartItemResponse> listShoppingCart(@PathVariable Long userId){
 
-        List<ShoppingCartItem> shoppingCartItemList = service.getShoppingCart(userId);
+        List<ShoppingCartItem> shoppingCartItemList = service.listShoppingCart(userId);
 
         ListShoppingCartItemResponse listShoppingCartItemResponse = new ListShoppingCartItemResponse();
 
@@ -110,7 +107,7 @@ public class ShoppingCartResource {
 
     //OK
     @GetMapping("{userId}/items/{sku}")
-    public ResponseEntity<ShoppingCartItemResponse> getProduct(@PathVariable Long userId, @PathVariable Long sku){
+    public ResponseEntity<ShoppingCartItemResponse> getItem(@PathVariable Long userId, @PathVariable Long sku){
 
         ShoppingCartItem shoppingCartItem =  service.getItem(userId, sku);
 
@@ -123,10 +120,9 @@ public class ShoppingCartResource {
         return new ResponseEntity<>(shoppingCartItemResponse, HttpStatus.OK);
     }
 
-
-    @PatchMapping("{userId}/items/{sku}?quantity={quantity}")
+    @PatchMapping("{userId}/items/{sku}")
     public ResponseEntity<ShoppingCartItemResponse> editQuantity(@PathVariable Long userId, @PathVariable Long sku,
-                                                                 @RequestParam(required = false) Integer quantity){
+                                                                 @RequestParam Integer quantity){
 
         ShoppingCartItem shoppingCartItem =  service.editQuantity(userId, sku, quantity);
 

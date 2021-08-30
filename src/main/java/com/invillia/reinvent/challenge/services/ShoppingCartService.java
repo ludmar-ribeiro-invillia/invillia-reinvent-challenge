@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-
 @Service
 public class ShoppingCartService {
 
@@ -91,7 +90,7 @@ public class ShoppingCartService {
 
     }
 
-    public List<ShoppingCartItem> getShoppingCart(Long userId){
+    public List<ShoppingCartItem> listShoppingCart(Long userId){
 
         User user = userService.findById(userId);
 
@@ -118,7 +117,6 @@ public class ShoppingCartService {
         return shoppingCartItem;
     }
 
-
     public ShoppingCartItem editQuantity(Long userId, Long sku, Integer quantity){
 
         User user = userService.findById(userId);
@@ -127,18 +125,14 @@ public class ShoppingCartService {
         ShoppingCart shoppingCart = optShoppingCart.orElseThrow(() -> new ResourceNotFoundException(userId));
 
         Optional<ShoppingCartItem> optShoppingCartItem = itemRepository.findByProductSkuAndShoppingCart(sku, shoppingCart);
-        ShoppingCartItem shoppingCartItem = new ShoppingCartItem();
-        if(optShoppingCartItem.isPresent()){
-            shoppingCartItem = optShoppingCartItem.get();
-            shoppingCartItem.setQuantity(quantity);
-        } else{
-            optShoppingCartItem.orElseThrow(() -> new ResourceNotFoundException());
-        }
+        ShoppingCartItem shoppingCartItem = optShoppingCartItem.orElseThrow(() -> new ResourceNotFoundException());
+
+        shoppingCartItem = optShoppingCartItem.get();
+        shoppingCartItem.setQuantity(quantity);
 
         itemRepository.save(shoppingCartItem);
         return shoppingCartItem;
     }
-
 
     public ShoppingCartItem editItem(Long userId, Long sku, AddShoppingCartItemRequest request){
 
