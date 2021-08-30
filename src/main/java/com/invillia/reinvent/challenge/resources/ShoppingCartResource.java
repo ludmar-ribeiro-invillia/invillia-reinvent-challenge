@@ -123,11 +123,12 @@ public class ShoppingCartResource {
         return new ResponseEntity<>(shoppingCartItemResponse, HttpStatus.OK);
     }
 
-    //@PatchMapping("{userId}/items/{sku}?quantity={quantity}")
-    @PatchMapping("{userId}/items/{sku}")
-    public ResponseEntity<ShoppingCartItemResponse> incrementQuantity(@PathVariable Long userId, @PathVariable Long sku){
 
-        ShoppingCartItem shoppingCartItem =  service.incrementQuantity(userId, sku);
+    @PatchMapping("{userId}/items/{sku}?quantity={quantity}")
+    public ResponseEntity<ShoppingCartItemResponse> editQuantity(@PathVariable Long userId, @PathVariable Long sku,
+                                                                 @PathVariable Integer quantity){
+
+        ShoppingCartItem shoppingCartItem =  service.editQuantity(userId, sku, quantity);
 
         ShoppingCartItemResponse shoppingCartItemResponse= new ShoppingCartItemResponse();
         shoppingCartItemResponse.setSku(sku);

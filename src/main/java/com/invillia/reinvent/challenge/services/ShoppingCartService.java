@@ -49,6 +49,7 @@ public class ShoppingCartService {
         Optional<ShoppingCartItem> optShoppingCartItem = itemRepository.findByProductSkuAndShoppingCart(sku, shoppingCart);
         ShoppingCartItem shoppingCartItem = new ShoppingCartItem();
         if(optShoppingCartItem.isPresent()){
+            shoppingCartItem = optShoppingCartItem.get();
             shoppingCartItem.setQuantity(shoppingCartItem.getQuantity() + request.getQuantity());
         } else{
             shoppingCartItem.setQuantity(request.getQuantity());
@@ -117,7 +118,8 @@ public class ShoppingCartService {
         return shoppingCartItem;
     }
 
-    public ShoppingCartItem incrementQuantity(Long userId, Long sku){
+
+    public ShoppingCartItem editQuantity(Long userId, Long sku, Integer quantity){
 
         User user = userService.findById(userId);
 
@@ -125,31 +127,15 @@ public class ShoppingCartService {
         ShoppingCart shoppingCart = optShoppingCart.orElseThrow(() -> new ResourceNotFoundException(userId));
 
         Optional<ShoppingCartItem> optShoppingCartItem = itemRepository.findByProductSkuAndShoppingCart(sku, shoppingCart);
-        ShoppingCartItem shoppingCartItem = optShoppingCartItem.orElseThrow(() -> new ResourceNotFoundException());
-
-        shoppingCartItem.setQuantity(shoppingCartItem.getQuantity() + 1);
-
-        return shoppingCartItem;
-
-    }
-
-    public ShoppingCartItem decrementQuantity(Long userId, Long sku){
-
-        User user = userService.findById(userId);
-
-        Optional<ShoppingCart> optShoppingCart = shoppingCartRepository.findByUserId(userId);
-        ShoppingCart shoppingCart = optShoppingCart.orElseThrow(() -> new ResourceNotFoundException(userId));
-
-        Optional<ShoppingCartItem> optShoppingCartItem = itemRepository.findByProductSkuAndShoppingCart(sku, shoppingCart);
-        ShoppingCartItem shoppingCartItem = optShoppingCartItem.orElseThrow(() -> new ResourceNotFoundException());
-
-        if(shoppingCartItem.getQuantity() == null){
+        ShoppingCartItem shoppingCartItem = new ShoppingCartItem();
+        if(optShoppingCartItem.isPresent()){
+            shoppingCartItem = optShoppingCartItem.get();
+            shoppingCartItem.setQuantity(quantity);
+        } else{
             optShoppingCartItem.orElseThrow(() -> new ResourceNotFoundException());
         }
-        shoppingCartItem.setQuantity(shoppingCartItem.getQuantity() - 1);
 
         return shoppingCartItem;
-
     }
 
 }

@@ -25,6 +25,7 @@ public class ProductService {
     }
 
     public Product insert(Product product){
+
         return repository.save(product);
     }
 

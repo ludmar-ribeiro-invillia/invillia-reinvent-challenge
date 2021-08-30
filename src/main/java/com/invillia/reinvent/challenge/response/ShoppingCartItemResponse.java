@@ -5,7 +5,6 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 public class ShoppingCartItemResponse {
 
-
     @JsonInclude(Include.NON_NULL)
     private Long sku;
     private Double price;
@@ -54,6 +53,5 @@ public class ShoppingCartItemResponse {
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
-
 
 }
