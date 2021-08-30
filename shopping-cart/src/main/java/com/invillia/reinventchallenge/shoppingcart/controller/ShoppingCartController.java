@@ -39,10 +39,9 @@ public class ShoppingCartController {
     private ModelMapper modelMapper;
 
     @GetMapping
-    public ResponseEntity<List<ShoppingCartDto>> getShoppingCartList() {
-        log.info("getShoppingCartList");
+    public ResponseEntity<List<ShoppingCartDto>> getList() {
         final List<ShoppingCart> shoppingCartAll = shoppingCartService.getAll();
-        log.info("getShoppingCartList, shoppingCartAll={}", shoppingCartAll);
+        log.info("getList, shoppingCartAll={}", shoppingCartAll);
 
         if (shoppingCartAll.isEmpty()) {
             return ResponseEntity.noContent().build();

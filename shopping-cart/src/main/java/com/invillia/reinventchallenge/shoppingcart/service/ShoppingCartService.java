@@ -53,89 +53,77 @@ public class ShoppingCartService {
         final Product product = new Product(sku, productDto.getName(), productDto.getPrice(), productDto.getQuantity());
 
         ShoppingCart shoppingCartUser = shoppingCartRepository.findByUserId(idUser);
-        if (shoppingCartUser != null) {
+
+        if (shoppingCartUser != null){
             log.info("addProduct Existe Shopping Cart na base");
             product.setShoppingCart(shoppingCartUser);
             shoppingCartUser.getListProducts().add(product);
-            shoppingCartUser = shoppingCartRepository.save(shoppingCartUser);
+            shoppingCartRepository.save(shoppingCartUser);
+
             return product;
         }
 
         shoppingCartUser = new ShoppingCart();
         shoppingCartUser.setUser(user);
         product.setShoppingCart(shoppingCartUser);
-
-        log.info("addProduct shoppingCartUser");
         shoppingCartUser.setListProducts(Arrays.asList(product));
-
-        shoppingCartUser = shoppingCartRepository.save(shoppingCartUser);
-        log.info("addProduct save shoppingCarUser");
+        shoppingCartRepository.save(shoppingCartUser);
 
 
-        return shoppingCartUser.getListProducts().get(productDto.getQuantity());
+        return product;
     }
 
     public Product putProduct(Long idUser, String sku, ProductDtoRequest productDto) {
         log.info("putProductService, idUser={}, sku={}, productDto={}", idUser, sku, productDto);
-        final ShoppingCart shoppingCartUser = shoppingCartRepository.findByUserId(idUser);
-        final Optional<Product> productBySku = shoppingCartUser.getListProducts()
-                .stream()
-                .filter(item -> sku.equals(item.getSku()))
-                .findFirst();
+        final ShoppingCart shoppingCartUser = getShoppingCart(idUser);
+        final Product productBySku = getProductBySku(sku, idUser,shoppingCartUser);
 
-        productBySku.orElseThrow(() -> {
-            log.error("Produto não encontrado!");
-            return new ProductNotFoundException("Produto não encontrado!", sku);
-        });
-
-        final Product product = new Product(sku, productDto.getName(), productDto.getPrice(), productDto.getQuantity());
-
-        return productRepository.save(product);
+        productBySku.setName(productDto.getName());
+        productBySku.setPrice(productDto.getPrice());
+        productBySku.setQuantity(productDto.getQuantity());
+        return productRepository.save(productBySku);
 
     }
 
     public Product editNumberOfItem(Long idUser, String sku, Integer quantity) {
         log.info("editNumberOfItem, idUser={}, sku={}, quantity={}", idUser, sku, quantity);
-        ShoppingCart shoppingCartUser = shoppingCartRepository.findByUserId(idUser);
-        final Optional<Product> productBySku = shoppingCartUser.getListProducts()
-                .stream()
-                .filter(item -> sku.equals(item.getSku()))
-                .findFirst();
-
-        productBySku.orElseThrow(() -> {
-            log.error("Produto não encontrado!");
-            return new ProductNotFoundException("Produto não encontrado!", sku);
-        });
-        Product product = productBySku.get();
-        product.setQuantity(quantity);
-        return productRepository.save(product);
+        final ShoppingCart shoppingCartUser = getShoppingCart(idUser);
+        final Product productBySku = getProductBySku(sku, idUser, shoppingCartUser);
+        productBySku.setQuantity(quantity);
+        return productRepository.save(productBySku);
     }
 
     public Product removeProductShoppingCart(Long idUser, String sku) {
         log.info("removeProductShoppingCart, idUser={}, sku={}", idUser, sku);
-        final ShoppingCart shoppingCartUser = shoppingCartRepository.findByUserId(idUser);
-        if (shoppingCartUser == null) {
-            log.error("removeProductShoppingCart Carrinho não encontrado! idUser={}, sku={}", idUser, sku);
-            throw new ShoppingCartNotFoundException("Carrinho não encontrado!", idUser.toString());
-        }
-        final Optional<Product> productBySku = shoppingCartUser.getListProducts()
-                .stream()
-                .filter(item -> sku.equals(item.getSku()))
-                .findFirst();
-
-        productBySku.orElseThrow(() -> {
-            log.error("Produto não encontrado!");
-            return new ProductNotFoundException("Produto não encontrado!", sku);
-        });
-        final Product product = productBySku.get();
-        shoppingCartUser.getListProducts().remove(product);
+        final ShoppingCart shoppingCartUser = getShoppingCart(idUser);
+        final Product productBySku = getProductBySku(sku, idUser, shoppingCartUser);
+        shoppingCartUser.getListProducts().remove(productBySku);
         shoppingCartRepository.save(shoppingCartUser);
-        return product;
+        return productBySku;
     }
 
     public Product retrieveProductShoppingCart(Long idUser, String sku) {
         log.info("retrieveProductShoppingCart, idUser={}, sku={}", idUser, sku);
-        final ShoppingCart shoppingCartUser = shoppingCartRepository.findByUserId(idUser);
+        final ShoppingCart shoppingCartUser = getShoppingCart(idUser);
+        final Product productBySku = getProductBySku(sku, idUser, shoppingCartUser);
+        return productBySku;
+    }
+
+    public ShoppingCart retrieveShoppingCart(Long idUser) {
+        log.info("retrieveShoppingCart, idUser={}", idUser);
+        final ShoppingCart shoppingCartUser = getShoppingCart(idUser);
+        return shoppingCartUser;
+    }
+
+    public ShoppingCart removeShoppingCart( Long idUser) {
+        log.info("removeShoppingCart, idUser={}", idUser);
+        final ShoppingCart shoppingCartUser = getShoppingCart(idUser);
+        shoppingCartRepository.delete(shoppingCartUser);
+        return shoppingCartUser;
+    }
+
+    private Product getProductBySku(String sku, Long idUser,ShoppingCart shoppingCartUser) {
+
         final Optional<Product> productBySku = shoppingCartUser.getListProducts()
                 .stream()
                 .filter(item -> sku.equals(item.getSku()))
@@ -148,24 +136,12 @@ public class ShoppingCartService {
         return productBySku.get();
     }
 
-    public ShoppingCart retrieveShoppingCart(Long idUser) {
-        log.info("retrieveShoppingCart, idUser={}", idUser);
+    private ShoppingCart getShoppingCart(Long idUser) {
         final ShoppingCart shoppingCartUser = shoppingCartRepository.findByUserId(idUser);
         if (shoppingCartUser == null) {
+            log.error("removeProductShoppingCart Carrinho não encontrado! idUser={}", idUser);
             throw new ShoppingCartNotFoundException("Carrinho não encontrado!", idUser.toString());
         }
         return shoppingCartUser;
     }
-
-    public ShoppingCart removeShoppingCart(Long idUser) {
-        log.info("removeShoppingCart, idUser={}", idUser);
-        final ShoppingCart shoppingCartUser = shoppingCartRepository.findByUserId(idUser);
-        if (shoppingCartUser == null) {
-            log.error("removeShoppingCart, não existe este carrinho de compras, idUser={}", idUser);
-            throw new ShoppingCartNotFoundException("Não existe este carrinho de compras!", idUser.toString());
-        }
-        shoppingCartRepository.delete(shoppingCartUser);
-        return shoppingCartUser;
-    }
-
 }
