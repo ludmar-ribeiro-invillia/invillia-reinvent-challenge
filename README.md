@@ -258,3 +258,17 @@ Caso consigam completar os requisitos aqui estabelecidos e se sintam confortáve
 * Autenticação
 * Qualquer lib ou framework adicional
 * Testes de componente (API)
+
+## Orientações para execução
+
+O banco utilizado para o projeto, sob orientação do mentor Allet, devido a problemas encontrados ao longo do desafio, foi o H2.
+Ele é gerado automaticamente em memória após subir a aplicação.
+Para acessar a console em tempo de execução
+Abra o navegador e digite http://localhost:8080/h2
+
+![image](https://user-images.githubusercontent.com/88889326/131589169-4e0a8797-82e0-447b-bf72-44be2aa4d9ae.png)
+
+Clique em connect.
+Pronto a base de dados estará disponível para consulta.
+
+Execute a aplicação através do método main da classe ShoppingcartApplication.
