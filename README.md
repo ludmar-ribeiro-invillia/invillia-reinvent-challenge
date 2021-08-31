@@ -282,9 +282,16 @@ spring.datasource.driver-class-name =com.mysql.jdbc.Driver
 
 ### Docker - MySQL:
  ```shell
-docker run --name mysql-shopping-cart -e MYSQL_DATABASE=shopping-cart -e MYSQL_ROOT_PASSWORD=my_secret_pw -d -p 3306:3docker run --name mysql-shopping-cart -e MYSQL_DATABASE=shopping-cart -e MYSQL_USER=thandra -e MYSQL_ROOT_PASSWORD=my_secret_pw -d -p 3306:3306 mysql:latest306 mysql:latest
+docker run --name mysql-shopping-cart -e MYSQL_DATABASE=shopping-cart -e MYSQL_USER=thandra -e MYSQL_ROOT_PASSWORD=my_secret_pw -d -p 3306:3306 mysql:latest
 ```
 
+Executar a query abaixo para adicionar um usuário e um produto na base.
+
+```
+INSERT INTO customer (id, name) VALUES(1, 'Thandra');
+INSERT INTO product (id, name, price, sku) VALUES (2, 'Laranja', 2.00, 'laranja');
+UPDATE hibernate_sequence SET next_val = 3 where next_val = 1;
+```
 
 ### Executar:
 ```shell
