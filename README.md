@@ -269,6 +269,7 @@ Caso consigam completar os requisitos aqui estabelecidos e se sintam confortáve
 - Spring Web WEB 
 - MySQL Driver SQL 
 - ModelMapper
+- Swagger
 
 ### Aplication properties:
 
@@ -278,6 +279,7 @@ spring.datasource.url=jdbc:mysql://localhost:3306/shopping-cart
 spring.datasource.username=root
 spring.datasource.password=my_secret_pw
 spring.datasource.driver-class-name =com.mysql.jdbc.Driver
+server.port=8081
 ```
 
 ### Docker - MySQL:
@@ -291,6 +293,13 @@ Executar a query abaixo para adicionar um usuário e um produto na base.
 INSERT INTO customer (id, name) VALUES(1, 'Thandra');
 INSERT INTO product (id, name, price, sku) VALUES (2, 'Laranja', 2.00, 'laranja');
 UPDATE hibernate_sequence SET next_val = 3 where next_val = 1;
+```
+
+### Swagger
+
+Para acessar o Swagger:
+```
+http://localhost:8081/swagger-ui.html
 ```
 
 ### Executar:
