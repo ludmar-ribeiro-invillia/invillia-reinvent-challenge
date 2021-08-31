@@ -23,7 +23,7 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="idProduct")
+    @Column(name = "idProduct")
     private Long id;
     @Column(nullable = false)
     private String sku;
@@ -42,14 +42,14 @@ public class Product {
 
     @PrePersist
     public void prePersist() {
-        if(quantity==null || quantity==0){
+        if (quantity == null || quantity == 0) {
             quantity = 1;
         }
     }
 
     @PreUpdate
     public void preUpdate() {
-        if(quantity==null || quantity==0){
+        if (quantity == null || quantity == 0) {
             quantity = 1;
         }
     }
@@ -58,7 +58,7 @@ public class Product {
     @JoinColumn(name = "idShoppingCart", referencedColumnName = "idShoppingCart")
     private ShoppingCart shoppingCart;
 
-    public BigDecimal calculateSumProduct (){
+    public BigDecimal calculateSumProduct() {
         return price.multiply(BigDecimal.valueOf(quantity));
     }
 }

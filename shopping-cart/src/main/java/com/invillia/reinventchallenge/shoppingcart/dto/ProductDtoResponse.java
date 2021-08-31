@@ -1,6 +1,5 @@
 package com.invillia.reinventchallenge.shoppingcart.dto;
 
-import com.invillia.reinventchallenge.shoppingcart.entity.Product;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
