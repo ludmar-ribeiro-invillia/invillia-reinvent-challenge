@@ -6,15 +6,12 @@ import com.invillia.challenge.shoppingcart.dto.ItemResponseDto;
 import com.invillia.challenge.shoppingcart.entity.Cart;
 import com.invillia.challenge.shoppingcart.entity.Customer;
 import com.invillia.challenge.shoppingcart.entity.Product;
-import com.invillia.challenge.shoppingcart.exceptions.CartAlreadyHasProductException;
-import com.invillia.challenge.shoppingcart.exceptions.CustomerNotFoundException;
-import com.invillia.challenge.shoppingcart.exceptions.ProductNotFoundException;
+import com.invillia.challenge.shoppingcart.exceptions.*;
 import com.invillia.challenge.shoppingcart.repository.CartRepository;
 import com.invillia.challenge.shoppingcart.repository.CustomerRepository;
 import com.invillia.challenge.shoppingcart.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -45,40 +42,33 @@ public class ShoppingCartService {
     }
 
     public ItemResponseDto AddItem(Integer userId, String sku, ItemDto itemDto) {
-        //TODO adicionar validação para sku do produto e userid, adicionar erro, no caso da segunda tentativa, este produto não existe ou este produto já está no carrinho.
-        final Customer customer = customerRepository.findById(userId)
-                .orElseThrow();
-        final Product product = new Product(itemDto.getPrice(), itemDto.getName(), sku);
+        final Customer customer = validateCustomer(userId);
+        final Product product = validateProduct(sku);
+        validateRepeatedCartProduct(sku, userId);
         final Cart cart = new Cart(product, customer, itemDto.getQuantity());
+        product.setPrice(itemDto.getPrice());
         productRepository.save(product);
         cartRepository.save(cart);
-        return new ItemResponseDto(sku, itemDto.getName(), itemDto.getPrice(), itemDto.getQuantity());
+        return new ItemResponseDto(sku, cart.getProduct().getName(), cart.getProduct().getPrice(), cart.getQuantity());
     }
 
     public ItemResponseDto editItem(Integer userId, String sku, ItemDto itemDto) {
-        Cart cart = cartRepository.findByProduct_SkuAndCustomer_Id(sku, userId);
+        Cart cart = validateEmptyCartProduct(sku, userId);
         cart.getProduct().setPrice(itemDto.getPrice());
         cart.setQuantity(itemDto.getQuantity());
         productRepository.save(cart.getProduct());
         cartRepository.save(cart);
-        return new ItemResponseDto(sku, itemDto.getName(), itemDto.getPrice(), itemDto.getQuantity());
+        return new ItemResponseDto(sku, cart.getProduct().getName(), cart.getProduct().getPrice(), cart.getQuantity());
     }
 
     public ItemResponseDto deleteItem(Integer userId, String sku) {
-        Cart cart = cartRepository.findByProduct_SkuAndCustomer_Id(sku, userId);
+        Cart cart = validateEmptyCartProduct(sku, userId);
         cartRepository.delete(cart);
         return new ItemResponseDto(sku, cart.getProduct().getName(), cart.getProduct().getPrice(), cart.getQuantity());
     }
 
-    public ItemResponseDto editQuantity(Integer userId, String sku, Integer quantity) {
-        Cart cart = cartRepository.findByProduct_SkuAndCustomer_Id(sku, userId);
-        cart.setQuantity(quantity);
-        cartRepository.save(cart);
-        return new ItemResponseDto(sku, cart.getProduct().getName(), cart.getProduct().getPrice(), cart.getQuantity());
-    }
-
     public ItemResponseDto getItem(Integer userId, String sku) {
-        Cart cart = cartRepository.findByProduct_SkuAndCustomer_Id(sku, userId);
+        Cart cart = validateEmptyCartProduct(sku, userId);
         return new ItemResponseDto(sku, cart.getProduct().getName(), cart.getProduct().getPrice(), cart.getQuantity());
     }
 
@@ -93,7 +83,7 @@ public class ShoppingCartService {
     }
 
     public CartDto getCartByUserId(Integer userId) {
-        List<Cart> carts = cartRepository.findByCustomer_Id(userId);
+        List<Cart> carts = validateCart(userId);
         BigDecimal total = BigDecimal.ZERO;
         List<ItemResponseDto> listItemResponseDto = new ArrayList<ItemResponseDto>();
         for(Cart cart: carts) {
@@ -121,12 +111,28 @@ public class ShoppingCartService {
         return product;
     }
 
-    public void validateCartProduct(String sku, Integer userId) {
+    public void validateRepeatedCartProduct(String sku, Integer userId) {
         final Cart cart = cartRepository.findByProduct_SkuAndCustomer_Id(sku, userId);
         if(cart != null) {
             throw new CartAlreadyHasProductException("The shopping cart already have the same product.", sku);
-        } else {
+        }
+    }
 
+    public Cart validateEmptyCartProduct(String sku, Integer userId) {
+        final Cart cart = cartRepository.findByProduct_SkuAndCustomer_Id(sku, userId);
+        if(cart == null) {
+            throw new CartProductNotFoundException("There is no product on shopping cart for the given SKU.", sku);
+        } else {
+            return cart;
+        }
+    }
+
+    public List<Cart> validateCart(Integer userId) {
+        final List<Cart> cart = cartRepository.findByCustomer_Id(userId);
+        if(cart == null) {
+            throw new CartNotFoundException("There is no shopping cart for the given Costumer Id", userId.toString());
+        } else {
+            return cart;
         }
     }
 

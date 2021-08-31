@@ -44,7 +44,7 @@ public class ResponseHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(value = {CartProductNotFoundException.class})
-    protected ResponseEntity<Object> CartProductNotFoundHandler(CartAlreadyHasProductException ex, WebRequest request){
+    protected ResponseEntity<Object> CartProductNotFoundHandler(CartProductNotFoundException ex, WebRequest request){
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage(ex.getMessage());
         errorResponse.setError_key(ex.ERROR_KEY);
@@ -55,7 +55,18 @@ public class ResponseHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(value = {CartNotFoundException.class})
-    protected ResponseEntity<Object> CartNotFoundHandler(CartAlreadyHasProductException ex, WebRequest request){
+    protected ResponseEntity<Object> CartNotFoundHandler(CartNotFoundException ex, WebRequest request){
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setMessage(ex.getMessage());
+        errorResponse.setError_key(ex.ERROR_KEY);
+        errorResponse.setResource(ex.RESOURCE);
+        errorResponse.setResource_key(ex.getResourceKey());
+        return handleExceptionInternal(ex, errorResponse,
+                new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+    }
+
+    @ExceptionHandler(value = {ProductAlreadyOnDBException.class})
+    protected ResponseEntity<Object> ProductAlreadyOnDBHandler(ProductAlreadyOnDBException ex, WebRequest request){
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage(ex.getMessage());
         errorResponse.setError_key(ex.ERROR_KEY);

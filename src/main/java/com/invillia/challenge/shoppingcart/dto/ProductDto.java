@@ -2,23 +2,17 @@ package com.invillia.challenge.shoppingcart.dto;
 
 import java.math.BigDecimal;
 
-public class ItemDto {
+public class ProductDto {
     private String name;
     private BigDecimal price;
-    private Integer quantity = 1;
 
-    public ItemDto() {
+    public ProductDto() {
 
     }
 
-    public ItemDto(String name, BigDecimal price, Integer quantity) {
+    public ProductDto(String name, BigDecimal price) {
         this.name = name;
         this.price = price;
-        this.quantity = quantity;
-    }
-
-    public ItemDto(String name, BigDecimal price) {
-        this(name, price, 1);
     }
 
     public String getName() {
@@ -37,20 +31,11 @@ public class ItemDto {
         this.price = price;
     }
 
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
-
     @Override
     public String toString() {
         return "ItemDto{" +
                 ", name='" + name + '\'' +
                 ", price=" + price +
-                ", quantity=" + quantity +
                 '}';
     }
 }
