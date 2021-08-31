@@ -1,3 +1,9 @@
+# Como executar a aplicação
+
+1. Instalar o **MySQL**. Na porta **3306**, usuário: **root**, senha: **root**;
+2. Executar o script que se encontra dentro do projeto, no caminho: `/src/main/resources/sql/DDL.sql`;
+3. Executar a aplicação através do método `main` da classe `ChallengeApplication`.
+
 # Invillia Reinvent - Challenge
 
 Agora é a hora de colocarmos em prática tudo o que relembramos em nossas sessões e o que pudemos estudar à mais durante esse tempo.
