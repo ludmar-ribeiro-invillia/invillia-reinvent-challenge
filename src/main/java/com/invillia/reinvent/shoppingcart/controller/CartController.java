@@ -4,9 +4,9 @@ import com.invillia.reinvent.shoppingcart.entity.Cart;
 import com.invillia.reinvent.shoppingcart.entity.Product;
 import com.invillia.reinvent.shoppingcart.repository.CartRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,25 +18,29 @@ public class CartController {
     private Cart cart;
 
     @RequestMapping(value = "/{id}/items/{sku}", method = RequestMethod.POST)
-    public Cart addProductCart(@PathVariable("id") int id,
+    public ResponseEntity<Product> addProductCart(@PathVariable("id") int id,
                                @PathVariable("sku") String sku,
                                @RequestBody Product product) {
         product.setSku(sku);
-
-        if (cartRepository.findByIdUser(id) == null) {
-            List<Product> productList = new ArrayList<>();
-            productList.add(product);
-            Cart cart = new Cart(id, productList);
-            return cartRepository.save(cart);
-        } else {
-            Cart cart = cartRepository.findByIdUser(id);
-            cart.addProduct(product);
-            return cartRepository.save(cart);
+        try{
+            if (cartRepository.findByIdUser(id) == null) {
+                List<Product> productList = new ArrayList<>();
+                productList.add(product);
+                Cart cart = new Cart(id, productList);
+                cartRepository.save(cart);
+            } else {
+                Cart cart = cartRepository.findByIdUser(id);
+                cart.addProduct(product);
+                cartRepository.save(cart);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return ResponseEntity.accepted().body(product);
     }
 
     @RequestMapping(value = "/{id}/items/{sku}", method = RequestMethod.PUT)
-    public Cart updateProductCart(@PathVariable("id") int id,
+    public ResponseEntity<Product> updateProductCart(@PathVariable("id") int id,
                                   @PathVariable("sku") String sku,
                                   @RequestBody Product product) {
         Cart cart = cartRepository.findByIdUser(id);
@@ -47,22 +51,23 @@ public class CartController {
                 prod.setQuantity(product.getQuantity());
             }
         }
-        return cartRepository.save(cart);
+        cartRepository.save(cart);
+        product.setSku(sku);
+        return ResponseEntity.accepted().body(product);
     }
 
-    //@RequestMapping(value = "/{id}/items/{sku}?quantity={newQuantity}", method = RequestMethod.PATCH,
-    //consumes = "application/json-patch+json")
-    @PatchMapping(path = "/{id}/items/{sku}?quantity={newQuantity}")
-    public Cart updateProductQuantityCart(@PathVariable("id") int id,
+    @PatchMapping(path = "/{id}/items/{sku}")
+    public ResponseEntity<?> updateProductQuantityCart(@PathVariable("id") int id,
                                           @PathVariable("sku") String sku,
-                                          @PathVariable("newQuantity") String newQuantity) {
+                                          @RequestParam("quantity") String newQuantity) {
         Cart cart = cartRepository.findByIdUser(id);
         for (Product prod : cart.getProduct()) {
             if (prod.getSku().contentEquals(sku)) {
                 prod.setQuantity(Integer.parseInt(newQuantity));
+                return ResponseEntity.ok().body(cart);
             }
         }
-        return cartRepository.save(cart);
+        return ResponseEntity.notFound().build();
     }
 
     @RequestMapping(value = "/{id}/items/{sku}", method = RequestMethod.DELETE)
@@ -71,8 +76,9 @@ public class CartController {
         Cart cart = cartRepository.findByIdUser(id);
         for (Product prod : cart.getProduct()) {
             if (prod.getSku().contentEquals(sku)) {
-                cartRepository.deleteByIdProduct(prod.getId(), cart.getId());
-                return ResponseEntity.ok().build();
+                cartRepository.deleteByIdCartProduct(prod.getId(), cart.getId());
+                cartRepository.deleteByIdProduct(prod.getId());
+                return ResponseEntity.ok().body(prod);
             }
         }
         return ResponseEntity.notFound().build();
@@ -82,7 +88,7 @@ public class CartController {
     public ResponseEntity<?> deleteCart(@PathVariable("id") int id) {
         Cart cart = cartRepository.findByIdUser(id);
         cartRepository.deleteById(cart.getId());
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(cart);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
@@ -91,14 +97,14 @@ public class CartController {
     }
 
     @RequestMapping(value = "/{id}/items/{sku}", method = RequestMethod.GET)
-    public Product getProductCart(@PathVariable("id") int id,
+    public ResponseEntity<?> getProductCart(@PathVariable("id") int id,
                                  @PathVariable("sku") String sku) {
         Cart cart = cartRepository.findByIdUser(id);
         for (Product prod : cart.getProduct()) {
             if (prod.getSku().contentEquals(sku)) {
-                   return prod;
+                return ResponseEntity.ok().body(prod);
             }
         }
-        return null;
+        return ResponseEntity.notFound().build();
     }
 }
