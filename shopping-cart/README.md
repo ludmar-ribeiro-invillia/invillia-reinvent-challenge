@@ -258,3 +258,81 @@ Caso consigam completar os requisitos aqui estabelecidos e se sintam confortáve
 * Autenticação
 * Qualquer lib ou framework adicional
 * Testes de componente (API)
+
+
+
+## Desenvolvendo o Projeto
+
+### Tecnologias utilizadas
+- Swagger
+- MySql
+- Dbeaver-ce
+- Intellij
+- Docker 
+- Spring Data JPA MySql
+- JPA Mapeamento Relacional
+- Gradle
+
+### Swagger
+Principal fonte para o Swagger:
+    
+    https://www.treinaweb.com.br/blog/documentando-uma-api-spring-boot-com-o-swagger
+    
+Acesso:
+
+    http://localhost:8080/swagger-ui.html
+
+### Docker MySql
+Gerando container Docker com criação de base:
+
+    docker run -p 3306:3306 -v /tmp:/tmp --name mysql-poc --detach -e MYSQL_ROOT_PASSWORD="root" -e MYSQL_ROOT_HOST=% -e MYSQL_DATABASE=shoppingcart -d mysql/mysql-server:8.0 --lower_case_table_names=1 --init-connect='GRANT CREATE USER ON *.* TO 'root'@'%';CREATE USER admin@%` IDENTIFIED BY "root";GRANT ALL PRIVILEGES ON . TO admin@% WITH GRANT OPTION;FLUSH PRIVILEGES;'
+
+Script para inserção do cliente no banco de dados:
+    
+    insert into shoppingcart.`user` (id_user, cpf, name)
+    values (1, '99999999999', 'Erika');
+
+Para conferir o funcionamento dos endpoints atualizando o banco de dados, utilizei consultas SQL abaixo:
+
+    select * from  shoppingcart s
+    
+    select * from  product p
+    
+    select * from  user u
+
+### Spring Data JPA MySql
+Material de referência:
+
+    https://spring.io/guides/gs/accessing-data-mysql/
+
+### JPA Mapeamento Relacional
+Material de referência:
+
+    https://www.baeldung.com/jpa-one-to-one
+
+    https://www.baeldung.com/hibernate-one-to-many
+
+### Teste de Unidade
+
+Ainda preciso estudar e entender melhor como montar os testes, mas o que consegui criar está funcionando.
+
+### Considerações finais
+O desafio proposto no Invillia Reinvent, foi a criação de um carrinho de compras para o usuário.
+Ao desenvolver o que nos foi proposto, consegui entender melhor a comunicação das ferramentas, despertei meu 
+interesse de estudar novas tecnologias de desenvolvimento e aprender muito mais do que o simples Java, como tinha em
+mente no início do desafio.
+
+Para desenvolver o proposto muitas coisas que não conhecia precisei pesquisar e aprender a utilizar e este 
+aprendizado, assim como a experiência de participar do projeto, levarei para vida.
+Mesmo que ainda iniciando na carreira de desenvolvimento, foi possível ver quão grandioso é este universo e quantas 
+possibilidades temos de aprender coisas novas, de ver formas de pensar diferentes que levam a uma conclusão em 
+comum e ainda conhecer pessoas de diversos locais com distintas realidades e com o mesmo objetivo que é entrar par o 
+universo da TI.
+
+Mesmo em pouco tempo de convívio termino este desafio levando em minha bagagem o conhecimento aprendido, as pessoas 
+maravilhosas que conheci, as experiências de vida trocadas e a certeza que sim, existe sim empresas que se preocupam
+com as pessoas e principalmente com aquelas que formam sua equipe de colaboradores.
+
+Agradeço a empresa a oportunidade de participar do Reinvent e a todos os envolvidos pela dedicação e empenho para 
+compartilhar conosco seus conhecimentos e por fazer tudo isso dar certo.
+
