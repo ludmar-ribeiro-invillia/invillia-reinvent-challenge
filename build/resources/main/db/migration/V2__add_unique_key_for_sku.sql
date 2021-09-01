@@ -1,0 +1,1 @@
+ALTER TABLE item ADD CONSTRAINT shoppingitem_uk01 UNIQUE(sku);

@@ -1,61 +1,15 @@
 # Invillia Reinvent - Challenge
 
-Agora é a hora de colocarmos em prática tudo o que relembramos em nossas sessões e o que pudemos estudar à mais durante esse tempo.
+##Banco de Dados
+Na raiz do projeto acessar o diretório docker.
+executar o seguinte comando
+docker-compose up --build db
 
-Para tal propomos aqui um desafio.
+##APLICAÇÃO 
+Para executar a aplicação na raiz do projeto
+./gradlew bootRun -Dspring.profiles.active=<PROFILE>
 
-
-## Challenge
-
-Devemos construir um componente dessa e-store que viemos evoluindo durante o programa. 
-
-Este componente é uma aplicação REST que tem por objetivo servir operações sobre um carrinho de compra.
-
-Para esse desafio solicitamos que atendam:
-* Criem uma aplicação **funcional**
-* As operações implementadas respeitem a convenção **REST** (Methods e Response)
-* Seja implementado usando **Java 11+** e **Spring Boot 2.5.3+**
-* Seja implementado um código **legível** e **organizado**
-* Atendam as **User Stories** abaixo descritas e os **contratos** estabelecidos
-* Utilizar uma base de dados para o armazenamento das informações
-* README atualizado com instruções de execução
-
-
-## Epic
-
-Continuamos a desenvolver a nossa e-store. Agora precisamos construir o carrinho de compras (shopping-cart).
-
-### US 1
-
-Eu, como comprador, quero ter um único carrinho de compras onde eu possa adicionar produtos.
-
-### US 2
-
-Eu, como comprador, quero adicionar um ou mais de um item de cada produto.
-
-### US 3
-
-Eu, como comprador, quero listar os itens no meu carrinho de compra.
-
-### US 4
-
-Eu, como comprador, quero incrementar a quantidade de um produto já no carrinho.
-
-### US 5
-
-Eu, como comprador, quero remover todos os items de um mesmo produto do carrinho.
-
-### US 6
-
-Eu, como comprador, quero decrementar a quantidade de um produto já no carrinho.
-
-### US 7
-
-Eu, como comprador, quero calcular o valor total dos itens no meu carrinho.
-
-### US 8
-
-Eu, como comprador, quero esvaziar meu carrinho.
+## Primeira chamada deve ser o POST /shopping-cart/<user-id>/items/<SKU>`
 
 
 ## Contratos de Interface
