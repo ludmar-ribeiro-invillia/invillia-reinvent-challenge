@@ -1,3 +1,50 @@
+#Título: API Shopping Cart desenvolvida para o desafio Invillia Reinvent
+ 
+Descrição: Shopping Cart é uma API backend funcional que respeita a convenção REST (Methods e Responde) nas operações que foram implementadas.  
+ 
+
+##Badges: 
+
+Status do Projeto: Concluído. 
+
+Tabela de Conteúdos: 
+
+Features: 
+ 
+[x] Adicionar produtos no carrinho de compras;  
+[x] Adicionar um ou mais item de cada produto;  
+[x] Listar os itens;  
+[x] Incrementar a quantidade de produtos existentes;  
+[x] Remover todos os itens de um mesmo produto;  
+[x] Decrementar a quantidade de produtos existentes;  
+[x] Calcular o valor total dos itens;  
+[x] Esvaziar carrinho. 
+
+ 
+
+##Demonstração da aplicação: 
+
+A aplicação segue o modelo sugerido pelo desafio. Durante o desenvolvimento foi necessário alterar o type das variáveis userId e sku, que compõem a chave primária, de String para Integer por uma questão de incompatibilidade de Length do MySQL que exige uma chave com menos de 1000 bytes. Portanto, as requisições enviadas para o Postman devem usar números em vez de letras/nomes.
+
+Pré-requisitos de como rodar a aplicação/testes: 
+ 
+Tecnologias utilizadas: JDK 16.0.2	 
+                                        IDEA JetBrains Intellij Community Edition 2021.2 
+                                        Gradle 7.2 
+                                        Spring Boot 2.5.4 
+                                        Docker Desktop 20.10.8 
+                                        MySql 8.0.26 
+                                        Postman 8.11.1 
+                                        GIT 2.33.0 
+
+
+
+
+
+
+
+
+
 # Invillia Reinvent - Challenge
 
 Agora é a hora de colocarmos em prática tudo o que relembramos em nossas sessões e o que pudemos estudar à mais durante esse tempo.
