@@ -1,0 +1,15 @@
+
+spring:
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.MySQL5Dialect
+  datasource:
+    url: jdbc:mysql://localhost:3306/sys?useSSL=false&allowPublicKeyRetrieval=true
+    username: invillia
+    password: 1nv1ll1a
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jackson:
+    property-naming-strategy: SNAKE_CASE
