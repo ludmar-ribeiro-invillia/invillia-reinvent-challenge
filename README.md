@@ -258,3 +258,41 @@ Caso consigam completar os requisitos aqui estabelecidos e se sintam confortáve
 * Autenticação
 * Qualquer lib ou framework adicional
 * Testes de componente (API)
+
+## Instruções de uso
+
+### Dependencies:
+
+- Spring Web WEB 
+- Spring Data JPA SQL
+- MySQL Driver SQL
+- Spring Data Elastic Search NOSQL 
+- Swagger
+
+### Aplication yml:
+
+Url=jdbc:mysql://localhost:3306/sys?useSSL=false&allowPublicKeyRetrieval=true
+Username=Bianka
+Password=Invillia
+driver-class-name: com.mysql.cj.jdbc.Driver
+server.port=8080
+
+
+### Docker - MySQL:
+ cmd
+docker ps --name mysql-shopping_cart -e MYSQL_DATABASE=shopping-cart -e MYSQL_USER=Bianka -e MYSQL_ROOT_PASSWORD=Invillia -d -p 3306:3306 mysql:latest
+
+### Swagger
+
+Para acessar o Swagger:
+
+http://localhost:8080/swagger-ui.html
+
+
+### Executar:
+   cmd
+./gradlew bootRun
+
+- Depois de executado:
+  - Docker do MySQL roda na porta `3306`
+  - Aplicação roda na porta `8080`
