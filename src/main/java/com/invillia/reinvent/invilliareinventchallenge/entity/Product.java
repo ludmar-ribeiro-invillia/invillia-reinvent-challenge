@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -26,6 +27,7 @@ public class Product {
     private String description;
     private BigDecimal price;
 
+    @JsonIgnoreProperties("itens")
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Item> itens;
 }

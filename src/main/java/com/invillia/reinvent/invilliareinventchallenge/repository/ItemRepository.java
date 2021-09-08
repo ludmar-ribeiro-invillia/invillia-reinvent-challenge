@@ -3,6 +3,7 @@ package com.invillia.reinvent.invilliareinventchallenge.repository;
 import com.invillia.reinvent.invilliareinventchallenge.entity.Item;
 import com.invillia.reinvent.invilliareinventchallenge.entity.ShoppingCart;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -24,7 +25,13 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
             " where sc.user_id = :userId", nativeQuery = true)
     List<Item> findAllByUser(Long userId);
 
-    void deleteById(Long id);
+    @Modifying
+    @Query("delete from Item i where i.id=:id")
+    void deleteById(@Param("id") Long id);
 
+
+    @Modifying
+    @Query("delete from Item")
+    void deleteAll();
 
 }

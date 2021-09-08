@@ -29,7 +29,7 @@ public class ProductController {
         if (produto.getId() != null) {
             return new ResponseEntity<ProductRecord>(this.mapProductRecord(produto), HttpStatus.CREATED);
         } else {
-            return new ResponseEntity<String>("Erro ao persistir o usuário", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<String>("Erro ao persistir o produto", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -39,6 +39,7 @@ public class ProductController {
         return prod.map(value -> ResponseEntity.ok(this.mapProductRecord(prod.get())))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
 
     private ProductRecord mapProductRecord(Product produto) {
 

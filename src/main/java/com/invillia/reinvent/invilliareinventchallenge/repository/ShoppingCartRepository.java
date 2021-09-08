@@ -23,6 +23,7 @@ public interface ShoppingCartRepository extends JpaRepository<ShoppingCart, Long
             " where sc.user_id = :userId ", nativeQuery = true)
     List<ShoppingCart> findAllByUser(Long userId);
 
+
     void deleteById(Long shopCartId);
 
 }

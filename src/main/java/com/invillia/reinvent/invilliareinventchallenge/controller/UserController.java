@@ -26,17 +26,19 @@ public class UserController {
 
         User u = this.userService.save(user);
         if (u.getId() != null) {
-            return new ResponseEntity<UserRecord>(this.mapUserRecord(user), HttpStatus.CREATED);
+            return new ResponseEntity<UserRecord>(this.mapUserRecord(u), HttpStatus.CREATED);
         } else {
             return new ResponseEntity<String>("Erro ao persistir o usuário", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<?>getUsuarioById(@PathVariable("id") Long id)throws Exception {
         Optional<User> usuario = userService.findById(id);
         return usuario.map(value -> ResponseEntity.ok(this.mapUserRecord(usuario.get())))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
     public UserRecord mapUserRecord(User usuario) {
 
         return new UserRecord(usuario.getNomeCompleto(),

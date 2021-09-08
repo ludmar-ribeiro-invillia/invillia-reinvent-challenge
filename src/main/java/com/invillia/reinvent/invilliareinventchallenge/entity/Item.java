@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.util.List;
 
 @EntityListeners(AuditingEntityListener.class)
 @AllArgsConstructor
@@ -22,10 +21,14 @@ public class Item {
     Long id;
     Integer quantity;
 
+    @JsonIgnoreProperties("cart")
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private ShoppingCart cart;
 
+    @JsonIgnoreProperties("itens")
     @OneToOne
     private Product product;
 
 }
+
+

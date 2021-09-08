@@ -2,21 +2,14 @@ package com.invillia.reinvent.invilliareinventchallenge.controller;
 
 
 import com.invillia.reinvent.invilliareinventchallenge.entity.Item;
-import com.invillia.reinvent.invilliareinventchallenge.entity.Product;
-import com.invillia.reinvent.invilliareinventchallenge.entity.ShoppingCart;
-import com.invillia.reinvent.invilliareinventchallenge.entity.User;
+
 import com.invillia.reinvent.invilliareinventchallenge.record.ShoppingCartRecord;
 import com.invillia.reinvent.invilliareinventchallenge.record.ShoppingRecordTotal;
-import com.invillia.reinvent.invilliareinventchallenge.repository.ItemRepository;
-import com.invillia.reinvent.invilliareinventchallenge.service.interfaces.ProductService;
 import com.invillia.reinvent.invilliareinventchallenge.service.interfaces.ShoppingCartService;
-import com.invillia.reinvent.invilliareinventchallenge.service.interfaces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -26,150 +19,83 @@ public class ShoppingCartController {
     @Autowired
     private ShoppingCartService shoppingCartService;
 
-    @Autowired
-    private ProductService productService;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private ItemRepository itemRepository;
-
     @PostMapping("/{userId}/items/{productId}")
-    public ShoppingCartRecord create(@PathVariable("userId") Long userId, @PathVariable("productId") Long productId, @RequestBody Item itemUser) {
+    public ResponseEntity<?> create(@PathVariable("userId") Long userId, @PathVariable("productId") Long productId, @RequestBody Item itemUser) {
 
-
-        Optional<User> usu = Optional.of(userService.findById(userId).get());
-        Optional<Product> prod = Optional.of(productService.findById(productId).get());
-        Optional<ShoppingCart> shopCart = this.shoppingCartService.findByUser(usu.get().getId());
-        Item item = new Item();
-        Optional<Item> i = this.itemRepository.findAllByProductId(usu.get().getId(), prod.get().getId());
-        if (!shopCart.isPresent()) {
-            shopCart = Optional.of(new ShoppingCart());
-        }
-        if (i.isPresent()) {
-            i.get().setQuantity(i.get().getQuantity() + 1);
-            this.itemRepository.save(i.get());
-            return ShoppingCartMapShoppingCartRecord(shopCart.get(), i.get());
+        Optional<ShoppingCartRecord> scr = Optional.ofNullable(shoppingCartService.save(userId, productId, itemUser));
+        if (scr.isPresent()) {
+            return new ResponseEntity<ShoppingCartRecord>(scr.get(), HttpStatus.CREATED);
         } else {
-
-            if (itemUser.getQuantity() == null) {
-                item.setQuantity(1);
-            }
-            item.setQuantity(itemUser.getQuantity());
-            item.setProduct(prod.get());
-            shopCart.get().setUser(usu.get());
-            item.setCart(shoppingCartService.save(shopCart.get()));
-            this.itemRepository.save(item);
-            return ShoppingCartMapShoppingCartRecord(shopCart.get(), item);
+            return new ResponseEntity<String>("Erro ao persistir o Shopping-cart", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
 
+
     @PutMapping("/{userId}/items/{productId}")
-    public ShoppingCartRecord editByProduct(@PathVariable("userId") Long userId, @PathVariable("productId") Long productId, @RequestBody Item itemUser) {
+    public ResponseEntity<?> editByProduct(@PathVariable("userId") Long userId, @PathVariable("productId") Long productId, @RequestBody Item itemUser) {
 
-        Optional<User> usu = Optional.of(userService.findById(userId).get());
-        Optional<Product> prod = Optional.of(productService.findById(productId).get());
-
-        Optional<ShoppingCart> cart = shoppingCartService.findByUser(usu.get().getId());
-
-        Optional<Item> i = this.itemRepository.findAllByProductId(usu.get().getId(), prod.get().getId());
-
-        i.get().setQuantity(itemUser.getQuantity());
-
-        if (itemUser.getQuantity() == null) {
-            i.get().setQuantity(1);
+        Optional<ShoppingCartRecord> scr = Optional.ofNullable(shoppingCartService.editProduct(userId, productId, itemUser));
+        if (scr.isPresent()) {
+            return new ResponseEntity<ShoppingCartRecord>(scr.get(), HttpStatus.OK);
         } else {
-            i.get().setQuantity(itemUser.getQuantity());
+            return new ResponseEntity<String>("Erro ao editar o Shopping-cart", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        i.get().setProduct(prod.get());
-        this.itemRepository.save(i.get());
 
-        return ShoppingCartMapShoppingCartRecord(cart.get(), i.get());
     }
 
     @PatchMapping("/{userId}/items/{productId}")
-    public ShoppingCartRecord editByQuantity(@PathVariable("userId") Long userId, @PathVariable("productId") Long productId, @RequestParam("quantity") String qtd) {
+    public ResponseEntity<?> editByQuantity(@PathVariable("userId") Long userId, @PathVariable("productId") Long productId, @RequestParam("quantity") String qtd) {
+        Optional<ShoppingCartRecord> scr = Optional.ofNullable(shoppingCartService.editByQuantity(userId, productId, qtd));
+        if (scr.isPresent()) {
+            return new ResponseEntity<ShoppingCartRecord>(scr.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<String>("Erro ao editar o Shopping-cart", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
-        Optional<User> usu = Optional.of(userService.findById(userId).get());
-        Optional<Product> prod = Optional.of(productService.findById(productId).get());
-
-        Optional<ShoppingCart> cart = shoppingCartService.findByUser(usu.get().getId());
-
-        Optional<Item> i = this.itemRepository.findAllByProductId(usu.get().getId(), prod.get().getId());
-
-        i.get().setQuantity(Integer.parseInt(qtd));
-        this.itemRepository.save(i.get());
-        return ShoppingCartMapShoppingCartRecord(cart.get(), i.get());
     }
 
     @DeleteMapping("/{userId}/items/{productId}")
-    public ShoppingCartRecord deleteByProduct(@PathVariable("userId") Long userId, @PathVariable("productId") Long productId) {
-        Optional<Item> i = this.itemRepository.findAllByProductId(Long.parseLong(String.valueOf(userId)), Long.parseLong(String.valueOf(productId)));
-        Optional<ShoppingCart> cart = shoppingCartService.findByUser(Long.parseLong(String.valueOf(userId)));
-        ShoppingCartRecord scr = ShoppingCartMapShoppingCartRecord(cart.get(), i.get());
-        this.itemRepository.delete(i.get());
-        return scr;
+    public ResponseEntity<?>deleteByProduct(@PathVariable("userId") String userId, @PathVariable("productId") String productId) {
+        Optional<ShoppingCartRecord> scr = Optional.ofNullable(shoppingCartService.deleteItem(userId, productId));
+        if (scr.isPresent()) {
+            return new ResponseEntity<ShoppingCartRecord>(scr.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<String>("Erro ao excluir o item do Shopping-cart", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/{userId}/items/{productId}")
-    public ShoppingCartRecord findById(@PathVariable("userId") Long userId, @PathVariable("productId") Long productId) {
-        Optional<Item> i = this.itemRepository.findAllByProductId(Long.parseLong(String.valueOf(userId)), Long.parseLong(String.valueOf(productId)));
-        Optional<ShoppingCart> cart = shoppingCartService.findByUser(Long.parseLong(String.valueOf(userId)));
+    public ResponseEntity<?>  findProductByCartUser (@PathVariable("userId") Long userId, @PathVariable("productId") Long productId) {
 
-        return ShoppingCartMapShoppingCartRecord(cart.get(), i.get());
+        Optional<ShoppingCartRecord> srt = Optional.ofNullable(shoppingCartService.findProductByCartUser(userId,productId));
+        if (srt.isPresent()) {
+            return new ResponseEntity<ShoppingCartRecord>(srt.get(), HttpStatus.FOUND);
+        } else {
+            return new ResponseEntity<String>("Produto não localizado", HttpStatus.NOT_FOUND);
+        }
+
     }
 
     @GetMapping("/{userId}")
-    public ShoppingRecordTotal findByShoppingCartByUser(@PathVariable("userId") Long userId) {
-        List<Item> itens = this.itemRepository.findAllByUser(Long.parseLong(String.valueOf(userId)));
-        Optional<ShoppingCart> cart = shoppingCartService.findByUser(Long.parseLong(String.valueOf(userId)));
-        if (cart.get().getItens() == null) {
-            cart.get().setItens(new ArrayList<>());
+    public ResponseEntity<?> findByShoppingCartByUser(@PathVariable("userId") Long userId) {
+
+        Optional<ShoppingRecordTotal> srt = Optional.ofNullable(shoppingCartService.findByShoppingCartByUser(userId));
+        if (srt.isPresent()) {
+            return new ResponseEntity<ShoppingRecordTotal>(srt.get(), HttpStatus.FOUND);
+        } else {
+            return new ResponseEntity<String>("Carrinho de compras não localizado", HttpStatus.NOT_FOUND);
         }
-        BigDecimal tot = new BigDecimal(0);
-        cart.get().setItens(itens);
-        for (int i = 0; i < cart.get().getItens().size(); i++) {
-            tot = tot.add(cart.get().getItens().get(i).getProduct().getPrice());
-        }
-        cart.get().setTotal(tot);
-        return ShoppingCartMapShoppingRecordTotal(cart.get());
     }
 
     @DeleteMapping("/{userId}")
-    public ShoppingRecordTotal deleteByShoppingCart(@PathVariable("userId") Long userId) {
-
-        List<Item> itens = this.itemRepository.findAllByUser(Long.parseLong(String.valueOf(userId)));
-        Optional<ShoppingCart> cart = shoppingCartService.findByUser(Long.parseLong(String.valueOf(userId)));
-        if (cart.get().getItens() == null) {
-            cart.get().setItens(new ArrayList<>());
+    public ResponseEntity<?> deleteByShoppingCart(@PathVariable("userId") Long userId) {
+        Optional<ShoppingRecordTotal> srt = Optional.ofNullable(shoppingCartService.deleteShoppingCartByUserId(userId));
+        if (srt.isPresent()) {
+            return new ResponseEntity<ShoppingRecordTotal>(srt.get(), HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<String>("Não foi possível deletar ", HttpStatus.BAD_REQUEST);
         }
-        BigDecimal tot = new BigDecimal(0);
-        cart.get().setItens(itens);
-        for (int i = 0; i < cart.get().getItens().size(); i++) {
-            tot = tot.add(cart.get().getItens().get(i).getProduct().getPrice());
-        }
-        cart.get().setTotal(tot);
-        ShoppingRecordTotal sct = ShoppingCartMapShoppingRecordTotal(cart.get());
-        shoppingCartService.deleteById(cart.get().getId());
-        for(int i = 0; i < itens.size(); i++){
-            this.itemRepository.deleteById(itens.get(i).getId());
-        }
-        return sct;
 
     }
 
-    public ShoppingCartRecord ShoppingCartMapShoppingCartRecord(ShoppingCart sc, Item item) {
-        return new ShoppingCartRecord(sc.getId(),
-                item.getProduct().getPrice(),
-                item.getProduct().getDescription(),
-                item.getQuantity());
-    }
-
-    public ShoppingRecordTotal ShoppingCartMapShoppingRecordTotal(ShoppingCart sc) {
-        return new ShoppingRecordTotal(sc.getId(),
-                sc.getItens(),
-                sc.getTotal());
-    }
 }

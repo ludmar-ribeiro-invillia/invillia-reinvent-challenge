@@ -25,7 +25,7 @@ public class ProductServiceImpl implements ProductService {
 
     public List<Product> findAll() {
         Iterable<Product> productIterable = productRepository.findAll();
-        return StreamSupport.stream(productIterable.spliterator(),false).collect(Collectors.toList());
+        return StreamSupport.stream(productIterable.spliterator(), false).collect(Collectors.toList());
     }
 
     public Optional<Product> getProductById(@PathVariable Long id) {
